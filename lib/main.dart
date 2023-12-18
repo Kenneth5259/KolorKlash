@@ -11,11 +11,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SafeArea(
-        child: GameBoard()
-      )
-    );
+    return MaterialApp(
+        theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+        home: const Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+              child: GameBoard()
+          ),
+        )
+      );
   }
 }
 

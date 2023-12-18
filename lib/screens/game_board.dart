@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:kolor_klash/widgets/game_tile.dart';
+import 'package:kolor_klash/widgets/tile_container.dart';
+import 'package:kolor_klash/widgets/tile_deck.dart';
 
 class GameBoard extends StatefulWidget {
+  final gridSize = 3;
   const GameBoard({super.key});
 
   @override
@@ -11,55 +13,37 @@ class GameBoard extends StatefulWidget {
 class _GameBoardState extends State<GameBoard> {
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Expanded(
-            flex: 1,
-            child: Row(
-              children: [
-                Expanded(flex: 1, child: GameTile()),
-                Expanded(flex: 1, child: GameTile()),
-                Expanded(flex: 1, child: GameTile())
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Row(
-              children: [
-                Expanded(flex: 1, child: GameTile()),
-                Expanded(flex: 1, child: GameTile()),
-                Expanded(flex: 1, child: GameTile())
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Row(
-              children: [
-                Expanded(flex: 1, child: GameTile()),
-                Expanded(flex: 1, child: GameTile()),
-                Expanded(flex: 1, child: GameTile())
-              ],
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.only(top: 24.0, bottom: 8),
-              child: Row(
-                children: [
-                  Expanded(flex: 1, child: GameTile()),
-                  Expanded(flex: 1, child: GameTile()),
-                  Expanded(flex: 1, child: GameTile())
-                ],
-              ),
-            ),
-          ),
+          ...generateRows(widget.gridSize),
+          TileDeck(gridSize: widget.gridSize)
         ],
       ),
     );
+  }
+
+  List<Expanded> generateRows(int gridSize) {
+    List<Expanded> rows = [];
+    for(var i = 0; i < gridSize; i++) {
+      rows.add(
+        Expanded(
+          flex: 1,
+          child: Row(
+            children: generateCells(widget.gridSize, TileContainer(columnCount: gridSize)),
+          ),
+        )
+      );
+    }
+    return rows;
+  }
+
+  List<Expanded> generateCells(int gridSize, Widget childWidget) {
+    List<Expanded> cells = [];
+    for(var i = 0; i < gridSize; i++) {
+      cells.add(Expanded(flex: 1, child: childWidget));
+    }
+    return cells;
   }
 }

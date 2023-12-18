@@ -8,14 +8,19 @@ class FlexColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Flexible(
       flex: 1,
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              color: color,
-            ),
-          )
-        ],
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black)
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                color: color,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
