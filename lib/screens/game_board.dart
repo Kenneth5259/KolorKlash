@@ -3,7 +3,7 @@ import 'package:kolor_klash/widgets/tile_container.dart';
 import 'package:kolor_klash/widgets/tile_deck.dart';
 
 class GameBoard extends StatefulWidget {
-  final gridSize = 3;
+  final gridSize = 4;
   const GameBoard({super.key});
 
   @override
@@ -14,7 +14,7 @@ class _GameBoardState extends State<GameBoard> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(8, 32, 8, 8),
       child: Column(
         children: [
           ...generateRows(widget.gridSize),

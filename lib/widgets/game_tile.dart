@@ -85,5 +85,6 @@ class _GameTileState extends State<GameTile> {
 
   void onDragComplete() {
     widget.onDragAccept(widget.key);
+    color = null;
   }
 }
