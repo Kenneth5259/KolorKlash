@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/state/actions/update_deck_action.dart';
 import 'package:kolor_klash/widgets/flex_column.dart';
+import 'package:redux/redux.dart';
 import 'dart:math';
+
+import '../state/app_state.dart';
 
 class GameTile extends StatefulWidget {
   final int max;
@@ -41,16 +46,21 @@ class _GameTileState extends State<GameTile> {
       ),
     );
 
-    return Draggable<Map<int, Color>>(
-      data: {colorIndex: color!},
-      feedback: SizedBox(
-          width: 75,
-          height: 75,
-          child: tile
-      ),
-      childWhenDragging: null,
-      onDragCompleted: onDragComplete,
-      child: tile,
+    return StoreConnector<AppState, AppState>(
+      converter: (store) => store.state,
+      builder: (_, state) {
+        return Draggable<Map<int, Color>>(
+          data: {colorIndex: color!},
+          feedback: SizedBox(
+              width: 75,
+              height: 75,
+              child: tile
+          ),
+          childWhenDragging: null,
+          onDragCompleted: onDragComplete,
+          child: tile,
+        );
+      }
     );
   }
 
@@ -84,8 +94,8 @@ class _GameTileState extends State<GameTile> {
   }
 
   void onDragComplete() {
-    // TODO: Add some method to handle drag accept for Redux
-    //widget.onDragAccept(widget.key);
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(UpdateDeckAction(store.state.deck, widget));
     color = null;
   }
 }
