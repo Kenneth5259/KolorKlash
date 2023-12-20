@@ -47,7 +47,7 @@ class _GameBoardState extends State<GameBoard> {
     return rows;
   }
 
-  List<Expanded> generateCells(List<Widget> row) {
+  List<Expanded> generateCells(List<TileContainer> row) {
     List<Expanded> cells = [];
     for(var cell in row) {
       cells.add(Expanded(flex: 1, child: cell));
