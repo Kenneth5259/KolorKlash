@@ -4,9 +4,8 @@ import 'dart:math';
 
 class GameTile extends StatefulWidget {
   final int max;
-  final Function onDragAccept;
 
-  const GameTile({super.key, required this.max, required this.onDragAccept});
+  const GameTile({super.key, required this.max});
 
   @override
   State<GameTile> createState() => _GameTileState();
@@ -84,7 +83,8 @@ class _GameTileState extends State<GameTile> {
   }
 
   void onDragComplete() {
-    widget.onDragAccept(widget.key);
+    // TODO: Add some method to handle drag accept for Redux
+    //widget.onDragAccept(widget.key);
     color = null;
   }
 }

@@ -24,7 +24,7 @@ class _GameBoardState extends State<GameBoard> {
           child: Column(
             children: [
               ...generateRows(state.grid),
-              TileDeck(gridSize: state.gridSize)
+              const TileDeck()
             ],
           ),
         );
