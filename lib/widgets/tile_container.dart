@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'flex_column.dart';
 
 class TileContainer extends StatefulWidget {
-  final int columnCount;
-  const TileContainer({super.key, required this.columnCount});
+  final int size;
+  const TileContainer({super.key, required this.size});
 
   @override
   State<TileContainer> createState() => _TileContainerState();
@@ -14,6 +14,8 @@ class TileContainer extends StatefulWidget {
 
 class _TileContainerState extends State<TileContainer> {
   final Map<int, Color> colorMap = {};
+
+  int filledColumns = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class _TileContainerState extends State<TileContainer> {
             border: Border.all(color: Colors.black)
         ),
         child: Row(
-          children: List.generate(widget.columnCount, (index) => FlexColumn(color: colorMap[index]))
+          children: List.generate(widget.size, (index) => FlexColumn(color: colorMap[index]))
           ,
         ),
       ),
@@ -68,5 +70,9 @@ class _TileContainerState extends State<TileContainer> {
     }
 
     return colors;
+  }
+
+  int getColumnCount() {
+    return filledColumns;
   }
 }
