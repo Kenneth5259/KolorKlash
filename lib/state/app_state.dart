@@ -13,9 +13,9 @@ class AppState {
     for(var i = 0; i < gridSize; i++) {
         List<TileContainer> row = [];
         for(var j = 0; j < gridSize; j++) {
-          row.add(TileContainer(size: gridSize));
+          row.add(TileContainer(size: gridSize, i: i, j: j));
         }
-        deck.add(GameTile(max: gridSize));
+        deck.add(GameTile(max: gridSize, index: i,));
         grid.add(row);
     }
   }

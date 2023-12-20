@@ -4,8 +4,9 @@ import 'dart:math';
 
 class GameTile extends StatefulWidget {
   final int max;
+  final int index;
 
-  const GameTile({super.key, required this.max});
+  const GameTile({super.key, required this.max, required this.index});
 
   @override
   State<GameTile> createState() => _GameTileState();

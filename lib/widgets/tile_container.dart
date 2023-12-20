@@ -6,7 +6,9 @@ import 'flex_column.dart';
 
 class TileContainer extends StatefulWidget {
   final int size;
-  const TileContainer({super.key, required this.size});
+  final int i;
+  final int j;
+  const TileContainer({super.key, required this.size, required this.i, required this.j});
 
   @override
   State<TileContainer> createState() => _TileContainerState();
