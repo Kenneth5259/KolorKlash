@@ -23,7 +23,7 @@ class _GameBoardState extends State<GameBoard> {
           padding: const EdgeInsets.fromLTRB(8, 32, 8, 8),
           child: Column(
             children: [
-              ...generateRows(state.grid, state.gridSize),
+              ...generateRows(state.grid),
               TileDeck(gridSize: state.gridSize)
             ],
           ),
@@ -32,25 +32,25 @@ class _GameBoardState extends State<GameBoard> {
     );
   }
 
-  List<Expanded> generateRows(List<List<TileContainer>> tiles, int gridSize) {
+  List<Expanded> generateRows(List<List<TileContainer>> tiles) {
     List<Expanded> rows = [];
-    for(var i = 0; i < gridSize; i++) {
+    for(var row in tiles) {
       rows.add(
         Expanded(
           flex: 1,
           child: Row(
-            children: generateCells(gridSize, TileContainer(size: gridSize)),
-          ),
+            children: generateCells(row),
+          )
         )
       );
     }
     return rows;
   }
 
-  List<Expanded> generateCells(int gridSize, Widget childWidget) {
+  List<Expanded> generateCells(List<Widget> row) {
     List<Expanded> cells = [];
-    for(var i = 0; i < gridSize; i++) {
-      cells.add(Expanded(flex: 1, child: childWidget));
+    for(var cell in row) {
+      cells.add(Expanded(flex: 1, child: cell));
     }
     return cells;
   }
