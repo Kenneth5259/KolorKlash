@@ -6,15 +6,21 @@ import 'flex_column.dart';
 
 class TileContainer extends StatefulWidget {
   final int size;
-  final int i;
-  final int j;
-  const TileContainer({super.key, required this.size, required this.i, required this.j});
+  // row index for the tile respective to grid
+  final int row;
+  // column index for the tile respective to grid
+  final int column;
+
+  String get coordinate => "($row,$column)";
+  GlobalKey<TileContainerState>? get globalKey => key as GlobalKey<TileContainerState>?;
+
+  const TileContainer({super.key, required this.size, required this.row, required this.column});
 
   @override
-  State<TileContainer> createState() => _TileContainerState();
+  State<TileContainer> createState() => TileContainerState();
 }
 
-class _TileContainerState extends State<TileContainer> {
+class TileContainerState extends State<TileContainer> {
   final Map<int, Color> colorMap = {};
 
   int filledColumns = 0;

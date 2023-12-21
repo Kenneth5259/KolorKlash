@@ -15,7 +15,7 @@ AppState gridSizeReducer(AppState previousState, SetGridSizeAction action) {
       List<TileContainer> row = [];
       for(var j = 0; j < action.gridSize; j++) {
         // push new row entry
-        row.add(TileContainer(size: action.gridSize, i: i, j: j));
+        row.add(TileContainer(size: action.gridSize, row: i, column: j));
       }
       // stack row onto grid
       grid.add(row);

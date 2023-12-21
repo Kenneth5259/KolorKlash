@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../widgets/game_tile.dart';
 import '../widgets/tile_container.dart';
 
@@ -13,7 +15,8 @@ class AppState {
     for(var i = 0; i < gridSize; i++) {
         List<TileContainer> row = [];
         for(var j = 0; j < gridSize; j++) {
-          row.add(TileContainer(size: gridSize, i: i, j: j));
+          //GlobalKey<TileContainerState> tileContainerKey = GlobalKey();
+          row.add(TileContainer(size: gridSize, row: i, column: j));
         }
         deck.add(GameTile(max: gridSize, index: i,));
         grid.add(row);
