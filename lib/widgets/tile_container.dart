@@ -12,15 +12,15 @@ class TileContainer extends StatefulWidget {
   final int column;
 
   String get coordinate => "($row,$column)";
-  GlobalKey<TileContainerState>? get globalKey => key as GlobalKey<TileContainerState>?;
+  GlobalKey<_TileContainerState>? get globalKey => key as GlobalKey<_TileContainerState>?;
 
   const TileContainer({super.key, required this.size, required this.row, required this.column});
 
   @override
-  State<TileContainer> createState() => TileContainerState();
+  State<TileContainer> createState() => _TileContainerState();
 }
 
-class TileContainerState extends State<TileContainer> {
+class _TileContainerState extends State<TileContainer> {
   final Map<int, Color> colorMap = {};
 
   int filledColumns = 0;

@@ -1,13 +1,14 @@
 import 'dart:ui';
 
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
+import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 import 'package:kolor_klash/widgets/tile_container.dart';
 
 import '../app_state.dart';
 
 AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) {
   // retrieve the grid
-  List<List<TileContainer>> grid = previousState.grid;
+  List<List<TileContainerReduxState>> grid = previousState.grid;
   // get the color
   Color color = action.color;
   // ge the tile
@@ -24,18 +25,18 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
 }
 
 /// checks each column for a color match
-List<TileContainer> getVerticalMatch(List<List<TileContainer>> grid, TileContainer tile, Color color) {
+List<TileContainer> getVerticalMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
   // array containing all tiles in a column that have a color match
   List<TileContainer> column = [];
 
   // populate with each tile for the colum or stop if there isn't the color
-  for(var row in grid) {
-    var currentTile = row[tile.column];
-    if(!currentTile.globalKey!.currentState!.colorMap.containsValue(color)) {
-      return [];
-    }
-    column.add(row[tile.column]);
-  }
+  // for(var row in grid) {
+  //   var currentTile = row[tile.column];
+  //   if(!currentTile.globalKey!.currentState!.colorMap.containsValue(color)) {
+  //     return [];
+  //   }
+  //   column.add(row[tile.column]);
+  // }
 
   return column;
 }

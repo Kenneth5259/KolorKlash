@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:kolor_klash/widgets/tile_container.dart';
+import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 import 'package:kolor_klash/widgets/tile_deck.dart';
 
 import '../state/app_state.dart';
@@ -32,7 +32,7 @@ class _GameBoardState extends State<GameBoard> {
     );
   }
 
-  List<Expanded> generateRows(List<List<TileContainer>> tiles) {
+  List<Expanded> generateRows(List<List<TileContainerReduxState>> tiles) {
     List<Expanded> rows = [];
     for(var row in tiles) {
       rows.add(
@@ -47,10 +47,10 @@ class _GameBoardState extends State<GameBoard> {
     return rows;
   }
 
-  List<Expanded> generateCells(List<TileContainer> row) {
+  List<Expanded> generateCells(List<TileContainerReduxState> row) {
     List<Expanded> cells = [];
     for(var cell in row) {
-      cells.add(Expanded(flex: 1, child: cell));
+      cells.add(Expanded(flex: 1, child: cell.container));
     }
     return cells;
   }
