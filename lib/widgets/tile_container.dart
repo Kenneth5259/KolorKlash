@@ -67,8 +67,6 @@ class _TileContainerState extends State<TileContainer> {
   }
 
   updateColorMap(GameTilePayload data, AppState state) {
-    // TODO: Add Color Map Update Action
-
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(UpdateColorsAction(colorMap: data.colorMap, tile: widget, gameTileIndex: data.tileIndex));
   }
