@@ -49,15 +49,14 @@ class _GameTileState extends State<GameTile> {
     return StoreConnector<AppState, AppState>(
       converter: (store) => store.state,
       builder: (_, state) {
-        return Draggable<Map<int, Color>>(
-          data: {colorIndex: color!},
+        return Draggable<GameTilePayload>(
+          data: GameTilePayload(colorMap: {colorIndex: color!}, tileIndex: widget.index),
           feedback: SizedBox(
               width: 75,
               height: 75,
               child: tile
           ),
           childWhenDragging: null,
-          onDragCompleted: onDragComplete,
           child: tile,
         );
       }
@@ -92,10 +91,11 @@ class _GameTileState extends State<GameTile> {
   int generateColumnIndex() {
     return min + random.nextInt(widget.max - min);
   }
+}
 
-  void onDragComplete() {
-    final store = StoreProvider.of<AppState>(context);
-    store.dispatch(UpdateDeckAction(store.state.deck, widget));
-    color = null;
-  }
+class GameTilePayload {
+  final int tileIndex;
+  final Map<int, Color> colorMap;
+
+  GameTilePayload({required this.tileIndex, required this.colorMap});
 }

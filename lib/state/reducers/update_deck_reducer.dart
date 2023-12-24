@@ -12,22 +12,6 @@ AppState updateDeckReducer(AppState previousState, UpdateDeckAction action) {
   // remove the tile
   deck[removedTile.index] = null;
 
-  // check if the deck is "empty" ie all are null
-  bool isEmpty = true;
-  for(var entry in deck) {
-    if(entry != null) {
-      isEmpty = false;
-      break;
-    }
-  }
-
-  // if the deck is empty, repopulate the deck
-  if(isEmpty) {
-    for(var i  = 0; i < previousState.gridSize; i++) {
-      deck[i] = GameTile(max: previousState.gridSize, index: i);
-    }
-  }
-
   AppState updatedState = AppState(gridSize: previousState.gridSize);
   updatedState.deck = deck;
 
