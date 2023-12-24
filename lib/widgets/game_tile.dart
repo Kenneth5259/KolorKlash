@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:kolor_klash/state/actions/update_deck_action.dart';
 import 'package:kolor_klash/widgets/flex_column.dart';
-import 'package:redux/redux.dart';
 import 'dart:math';
 
 import '../state/app_state.dart';
