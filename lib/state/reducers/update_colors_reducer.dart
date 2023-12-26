@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
+import 'package:kolor_klash/state/subclasses/flushed_map.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 import 'package:kolor_klash/widgets/tile_container.dart';
 
@@ -22,9 +24,28 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
 
   grid[tile.row][tile.column].colorMap[newColor.keys.first] = newColor.values.first;
 
+  Set<TileContainerReduxState> flushables = {};
+
   // get the column if it can be flushed
-  //List<TileContainer> column = getVerticalMatch(grid, tile, color);
+  List<TileContainerReduxState> column = getVerticalMatch(grid, tile, newColor.values.first);
+  if(column.isNotEmpty) {
+    flushables = addListToSet(flushables, column);
+  }
   // get the row if it can be flushed
+  List<TileContainerReduxState> row = getHorizontalMatch(grid, tile, newColor.values.first);
+  if(row.isNotEmpty) {
+    flushables = addListToSet(flushables, row);
+  }
+
+  int score = 0;
+
+  for(var tile in flushables) {
+    FlushedMap flushedMap = flushColor(tile.colorMap, newColor.values.first);
+    score += flushedMap.colorCount;
+    tile.colorMap = flushedMap.colorMap;
+  }
+
+  log(flushables.length.toString());
   // get backslash diagonal if it can be flushed
   // get forwardslash diagonal if it can be flushed
   // check if tile can selfFlush
@@ -35,31 +56,31 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
 }
 
 /// checks each column for a color match
-List<TileContainer> getVerticalMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
+List<TileContainerReduxState> getVerticalMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
   // array containing all tiles in a column that have a color match
-  List<TileContainer> column = [];
+  List<TileContainerReduxState> column = [];
 
   // populate with each tile for the colum or stop if there isn't the color
-  // for(var row in grid) {
-  //   var currentTile = row[tile.column];
-  //   if(!currentTile.globalKey!.currentState!.colorMap.containsValue(color)) {
-  //     return [];
-  //   }
-  //   column.add(row[tile.column]);
-  // }
+  for(var row in grid) {
+    var currentTile = row[tile.column];
+    if(!currentTile.colorMap.containsValue(color)) {
+      return [];
+    }
+    column.add(row[tile.column]);
+  }
 
   return column;
 }
 
 /// checks each row for a color match
-List<TileContainer> getHorizontalMatch(List<List<TileContainer>> grid, TileContainer tile, Color color) {
+List<TileContainerReduxState> getHorizontalMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
   // array containing all tiles in a row that have color match
-  List<TileContainer> row = grid[tile.row];
+  List<TileContainerReduxState> row = grid[tile.row];
 
   for(var currentTile in row) {
-    // if(!currentTile.globalKey!.currentState!.colorMap.containsValue(color)) {
-    //   return [];
-    // }
+    if(!currentTile.colorMap.containsValue(color)) {
+      return [];
+    }
   }
 
   return row;
@@ -82,4 +103,21 @@ handleEmptyDeck(List<GameTile?> deck, int gridSize) {
     }
   }
   return deck;
+}
+
+/// method to add items to set
+Set<TileContainerReduxState> addListToSet(Set<TileContainerReduxState> set, List list) {
+  for(var item in list) {
+    set.add(item);
+  }
+  return set;
+}
+
+/// method to remove the colors from a color map and return the number of times that color was in the map
+///
+FlushedMap flushColor(Map<int, Color> colorMap, Color color) {
+  int colorCount = colorMap.length;
+  colorMap.removeWhere((key, value) => value == color);
+  colorCount -= colorMap.length;
+  return FlushedMap(colorMap: colorMap, colorCount: colorCount);
 }
