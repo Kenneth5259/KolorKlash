@@ -23,6 +23,10 @@ class _GameBoardState extends State<GameBoard> {
           padding: const EdgeInsets.fromLTRB(8, 32, 8, 8),
           child: Column(
             children: [
+              Row(children: [
+                Text("Turn Count: ${state.turnCount}"),
+                Text("Score: ${state.score}")
+              ],),
               ...generateRows(state.grid),
               const TileDeck()
             ],

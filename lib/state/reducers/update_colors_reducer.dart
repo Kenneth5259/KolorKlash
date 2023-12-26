@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
+import 'package:kolor_klash/state/subclasses/emptied_deck.dart';
 import 'package:kolor_klash/state/subclasses/flushed_map.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 import 'package:kolor_klash/widgets/tile_container.dart';
@@ -20,7 +21,9 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   deck[action.gameTileIndex] = null;
   int score = previousState.score;
   int turnCount = previousState.turnCount;
-  deck = handleEmptyDeck(deck, grid.length, turnCount);
+  EmptiedDeck emptiedDeck = handleEmptyDeck(deck, grid.length, turnCount);
+  deck = emptiedDeck.deck;
+  turnCount = emptiedDeck.turnCount;
   // get the tile
   TileContainer tile = action.tile;
 
@@ -89,24 +92,24 @@ List<TileContainerReduxState> getHorizontalMatch(List<List<TileContainerReduxSta
   return row;
 }
 
-handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount) {
+EmptiedDeck handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount) {
   // check if the deck is "empty" ie all are null
   bool isEmpty = true;
   for(var entry in deck) {
     if(entry != null) {
       isEmpty = false;
-      return deck;
+      return EmptiedDeck(deck: deck, turnCount: turnCount);
     }
   }
 
   // if the deck is empty, repopulate the deck
   if(isEmpty) {
-    turnCount++;
     for(var i  = 0; i < gridSize; i++) {
       deck[i] = GameTile(max: gridSize, index: i);
     }
   }
-  return deck;
+  turnCount = turnCount + 1;
+  return EmptiedDeck(deck: deck, turnCount: turnCount);
 }
 
 /// method to add items to set
