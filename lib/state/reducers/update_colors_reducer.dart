@@ -18,7 +18,9 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   List<GameTile?> deck = previousState.deck;
   // remove the missing tile
   deck[action.gameTileIndex] = null;
-  deck = handleEmptyDeck(deck, grid.length);
+  int score = previousState.score;
+  int turnCount = previousState.turnCount;
+  deck = handleEmptyDeck(deck, grid.length, turnCount);
   // get the tile
   TileContainer tile = action.tile;
 
@@ -37,7 +39,7 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
     flushables = addListToSet(flushables, row);
   }
 
-  int score = 0;
+
 
   for(var tile in flushables) {
     FlushedMap flushedMap = flushColor(tile.colorMap, newColor.values.first);
@@ -45,13 +47,14 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
     tile.colorMap = flushedMap.colorMap;
   }
 
-  log(flushables.length.toString());
   // get backslash diagonal if it can be flushed
   // get forwardslash diagonal if it can be flushed
   // check if tile can selfFlush
   AppState updatedAppState = AppState(gridSize: previousState.gridSize);
   updatedAppState.grid = grid;
   updatedAppState.deck = deck;
+  updatedAppState.score = score;
+  updatedAppState.turnCount = turnCount;
   return updatedAppState;
 }
 
@@ -86,7 +89,7 @@ List<TileContainerReduxState> getHorizontalMatch(List<List<TileContainerReduxSta
   return row;
 }
 
-handleEmptyDeck(List<GameTile?> deck, int gridSize) {
+handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount) {
   // check if the deck is "empty" ie all are null
   bool isEmpty = true;
   for(var entry in deck) {
@@ -98,6 +101,7 @@ handleEmptyDeck(List<GameTile?> deck, int gridSize) {
 
   // if the deck is empty, repopulate the deck
   if(isEmpty) {
+    turnCount++;
     for(var i  = 0; i < gridSize; i++) {
       deck[i] = GameTile(max: gridSize, index: i);
     }

@@ -6,6 +6,8 @@ import '../widgets/tile_container.dart';
 
 class AppState {
   int gridSize;
+  int turnCount = 0;
+  int score = 0;
   late List<List<TileContainerReduxState>> grid;
 
   late List<GameTile?> deck;
