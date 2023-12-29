@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
@@ -11,24 +10,35 @@ import '../../widgets/game_tile.dart';
 import '../app_state.dart';
 
 AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) {
-  // retrieve the grid
+  // get the grid
   List<List<TileContainerReduxState>> grid = previousState.grid;
   // get the color and its column position
   Map<int, Color> newColor = action.colorMap;
   // get the updated deck
   List<GameTile?> deck = previousState.deck;
+  // get the score
+  int score = previousState.score;
+  // get the turn count
+  int turnCount = previousState.turnCount;
+
   // remove the missing tile
   deck[action.gameTileIndex] = null;
-  int score = previousState.score;
-  int turnCount = previousState.turnCount;
+
+  // handle an emptied deck
   EmptiedDeck emptiedDeck = handleEmptyDeck(deck, grid.length, turnCount);
+
+  // update deck off of return
   deck = emptiedDeck.deck;
+  // update turn count off of return
   turnCount = emptiedDeck.turnCount;
-  // get the tile
+
+  // get the tile in question
   TileContainer tile = action.tile;
 
+  // assign the updated color (protection provided by drag target willAccept)
   grid[tile.row][tile.column].colorMap[newColor.keys.first] = newColor.values.first;
 
+  // unique set of tiles that can be flushed
   Set<TileContainerReduxState> flushables = {};
 
   // get the column if it can be flushed
@@ -41,7 +51,11 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   if(row.isNotEmpty) {
     flushables = addListToSet(flushables, row);
   }
-
+  // get the single tile if it can be flushed
+  List<TileContainerReduxState> matchedTile = getTileMatch(grid, tile,  newColor.values.first);
+  if(matchedTile.isNotEmpty) {
+    flushables = addListToSet(flushables, matchedTile);
+  }
 
 
   for(var tile in flushables) {
@@ -59,6 +73,18 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   updatedAppState.score = score;
   updatedAppState.turnCount = turnCount;
   return updatedAppState;
+}
+
+/// checks a single colum for a color match
+List<TileContainerReduxState> getTileMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
+  TileContainerReduxState matchableTile = grid[tile.row][tile.column];
+  for(var i = 0; i < grid.length; i++) {
+    var column = matchableTile.colorMap[i];
+    if(column == null || column != color) {
+      return [];
+    }
+  }
+  return [matchableTile];
 }
 
 /// checks each column for a color match
@@ -92,6 +118,7 @@ List<TileContainerReduxState> getHorizontalMatch(List<List<TileContainerReduxSta
   return row;
 }
 
+/// empties a deck and increments turn count if empty
 EmptiedDeck handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount) {
   // check if the deck is "empty" ie all are null
   bool isEmpty = true;
