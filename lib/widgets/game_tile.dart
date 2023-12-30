@@ -5,32 +5,19 @@ import 'dart:math';
 
 import '../state/app_state.dart';
 
-class GameTile extends StatefulWidget {
-  final int max;
-  final int index;
-
-  const GameTile({super.key, required this.max, required this.index});
-
-  @override
-  State<GameTile> createState() => _GameTileState();
-}
-
-class _GameTileState extends State<GameTile> {
-  final colors = <Color>[Colors.red, Colors.green, Colors.blue, Colors.yellow, Colors.orange];
-
-  final random = Random();
+class GameTile extends StatelessWidget {
+  GameTile({super.key, required this.max, required this.index, required this.colorIndex, this.color});
 
   final min = 0;
-  int colorIndex = 0;
+  final int max;
+  final int index;
+  final int colorIndex;
+  final Color? color;
 
-  Color? color;
 
   @override
   Widget build(BuildContext context) {
-
-    if(color == null) {
-      generateColor();
-    }
+    var currentColor = color ?? generateColor();
 
     Widget tile = Padding(
       padding: const EdgeInsets.all(4.0),
@@ -39,58 +26,60 @@ class _GameTileState extends State<GameTile> {
             border: Border.all(color: Colors.black)
         ),
         child: Row(
-          children: generateColumns(),
+          children: generateColumns(colorIndex),
         ),
       ),
     );
 
     return StoreConnector<AppState, AppState>(
-      converter: (store) => store.state,
-      builder: (_, state) {
-        return Draggable<GameTilePayload>(
-          data: GameTilePayload(colorMap: {colorIndex: color!}, tileIndex: widget.index),
-          feedback: SizedBox(
-              width: 75,
-              height: 75,
-              child: tile
-          ),
-          childWhenDragging: null,
-          child: tile,
-        );
-      }
+        converter: (store) => store.state,
+        builder: (_, state) {
+          return Draggable<GameTilePayload>(
+            data: GameTilePayload(colorMap: {colorIndex: currentColor}, tileIndex: index),
+            feedback: SizedBox(
+                width: 75,
+                height: 75,
+                child: tile
+            ),
+            childWhenDragging: null,
+            child: tile,
+          );
+        }
     );
   }
 
-  List<FlexColumn> generateColumns() {
+
+  List<FlexColumn> generateColumns(int colorIndex) {
     List<FlexColumn> columns = [];
 
-    for (var i = 0; i < widget.max; i++) {
+    for (var i = 0; i < max; i++) {
       columns.add(FlexColumn(color: i == colorIndex ? color : null));
     }
 
     return columns;
   }
 
-  void generateColor() {
+  static Color generateColor() {
+    const colors = <Color>[Colors.red, Colors.green, Colors.blue, Colors.yellow, Colors.orange];
     // shuffle the available colors
     var shuffledColors = [...colors];
-    shuffledColors.shuffle();
+    shuffledColors.shuffle(Random());
 
-    setState(() {
-      // set the color column
-      colorIndex = generateColumnIndex();
-      // set the color for the column
-      color = shuffledColors[0];
-    });
-
-
+    // set the color for the column
+    return shuffledColors[0];
   }
 
-  int generateColumnIndex() {
-    return min + random.nextInt(widget.max - min);
+  static int generateColumnIndex(int min, int max) {
+    Random random = Random();
+    return min + random.nextInt(max - min);
   }
+
 }
 
+/// Wrapper for data delivered to the tile container on drop
+///
+/// tileIndex refers to the index in the deck, 0 being leftmost, max-1 being rightmost
+/// colorMap is the index of the colored column(s) and corresponding value(s)
 class GameTilePayload {
   final int tileIndex;
   final Map<int, Color> colorMap;

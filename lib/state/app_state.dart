@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 
 import '../widgets/game_tile.dart';
@@ -8,6 +7,7 @@ class AppState {
   int gridSize;
   int turnCount = 0;
   int score = 0;
+  bool isGameOver = false;
   late List<List<TileContainerReduxState>> grid;
 
   late List<GameTile?> deck;
@@ -21,7 +21,7 @@ class AppState {
           //GlobalKey<TileContainerState> tileContainerKey = GlobalKey();
           row.add(TileContainerReduxState(container: TileContainer(size: gridSize, row: i, column: j)));
         }
-        deck.add(GameTile(max: gridSize, index: i,));
+        deck.add(GameTile(max: gridSize, index: i, color: GameTile.generateColor(), colorIndex: GameTile.generateColumnIndex(0, gridSize),));
         grid.add(row);
     }
   }

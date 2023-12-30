@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
 import 'package:kolor_klash/state/subclasses/emptied_deck.dart';
 import 'package:kolor_klash/state/subclasses/flushed_map.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
+import 'package:kolor_klash/state/utilites/GameStateRules.dart';
 import 'package:kolor_klash/widgets/tile_container.dart';
 
 import '../../widgets/game_tile.dart';
@@ -27,8 +29,6 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   // handle an emptied deck
   EmptiedDeck emptiedDeck = handleEmptyDeck(deck, grid.length, turnCount);
 
-  // update deck off of return
-  deck = emptiedDeck.deck;
   // update turn count off of return
   turnCount = emptiedDeck.turnCount;
 
@@ -39,24 +39,10 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   grid[tile.row][tile.column].colorMap[newColor.keys.first] = newColor.values.first;
 
   // unique set of tiles that can be flushed
-  Set<TileContainerReduxState> flushables = {};
+  Set<TileContainerReduxState> flushables = GameStateRules.generateFlushableSet(grid, tile, newColor.values.first);
 
-  // get the column if it can be flushed
-  List<TileContainerReduxState> column = getVerticalMatch(grid, tile, newColor.values.first);
-  if(column.isNotEmpty) {
-    flushables = addListToSet(flushables, column);
-  }
-  // get the row if it can be flushed
-  List<TileContainerReduxState> row = getHorizontalMatch(grid, tile, newColor.values.first);
-  if(row.isNotEmpty) {
-    flushables = addListToSet(flushables, row);
-  }
-  // get the single tile if it can be flushed
-  List<TileContainerReduxState> matchedTile = getTileMatch(grid, tile,  newColor.values.first);
-  if(matchedTile.isNotEmpty) {
-    flushables = addListToSet(flushables, matchedTile);
-  }
-
+  // update deck off of return
+  List<GameTile?> newDeck = emptiedDeck.deck;
 
   for(var tile in flushables) {
     FlushedMap flushedMap = flushColor(tile.colorMap, newColor.values.first);
@@ -64,94 +50,45 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
     tile.colorMap = flushedMap.colorMap;
   }
 
-  // get backslash diagonal if it can be flushed
-  // get forwardslash diagonal if it can be flushed
-  // check if tile can selfFlush
   AppState updatedAppState = AppState(gridSize: previousState.gridSize);
   updatedAppState.grid = grid;
-  updatedAppState.deck = deck;
+  updatedAppState.deck = newDeck;
   updatedAppState.score = score;
   updatedAppState.turnCount = turnCount;
+  updatedAppState.isGameOver = GameStateRules.isGameOver(grid, newDeck);
+  if(updatedAppState.isGameOver) {
+    log(updatedAppState.isGameOver.toString());
+  }
   return updatedAppState;
-}
-
-/// checks a single colum for a color match
-List<TileContainerReduxState> getTileMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
-  TileContainerReduxState matchableTile = grid[tile.row][tile.column];
-  for(var i = 0; i < grid.length; i++) {
-    var column = matchableTile.colorMap[i];
-    if(column == null || column != color) {
-      return [];
-    }
-  }
-  return [matchableTile];
-}
-
-/// checks each column for a color match
-List<TileContainerReduxState> getVerticalMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
-  // array containing all tiles in a column that have a color match
-  List<TileContainerReduxState> column = [];
-
-  // populate with each tile for the colum or stop if there isn't the color
-  for(var row in grid) {
-    var currentTile = row[tile.column];
-    if(!currentTile.colorMap.containsValue(color)) {
-      return [];
-    }
-    column.add(row[tile.column]);
-  }
-
-  return column;
-}
-
-/// checks each row for a color match
-List<TileContainerReduxState> getHorizontalMatch(List<List<TileContainerReduxState>> grid, TileContainer tile, Color color) {
-  // array containing all tiles in a row that have color match
-  List<TileContainerReduxState> row = grid[tile.row];
-
-  for(var currentTile in row) {
-    if(!currentTile.colorMap.containsValue(color)) {
-      return [];
-    }
-  }
-
-  return row;
 }
 
 /// empties a deck and increments turn count if empty
 EmptiedDeck handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount) {
   // check if the deck is "empty" ie all are null
-  bool isEmpty = true;
   for(var entry in deck) {
     if(entry != null) {
-      isEmpty = false;
       return EmptiedDeck(deck: deck, turnCount: turnCount);
     }
   }
-
-  // if the deck is empty, repopulate the deck
-  if(isEmpty) {
-    for(var i  = 0; i < gridSize; i++) {
-      deck[i] = GameTile(max: gridSize, index: i);
-    }
-  }
+  var newDeck = generateNewDeck(gridSize);
   turnCount = turnCount + 1;
-  return EmptiedDeck(deck: deck, turnCount: turnCount);
-}
-
-/// method to add items to set
-Set<TileContainerReduxState> addListToSet(Set<TileContainerReduxState> set, List list) {
-  for(var item in list) {
-    set.add(item);
-  }
-  return set;
+  return EmptiedDeck(deck: newDeck, turnCount: turnCount);
 }
 
 /// method to remove the colors from a color map and return the number of times that color was in the map
-///
 FlushedMap flushColor(Map<int, Color> colorMap, Color color) {
   int colorCount = colorMap.length;
   colorMap.removeWhere((key, value) => value == color);
   colorCount -= colorMap.length;
   return FlushedMap(colorMap: colorMap, colorCount: colorCount);
+}
+
+/// method to generate a new deck
+List<GameTile?> generateNewDeck(int gridSize) {
+  List<GameTile?> deck = [];
+  // populate the deck with excess
+  for(var i  = 0; i < gridSize; i++) {
+    deck.add(GameTile(max: gridSize, index: i, colorIndex: GameTile.generateColumnIndex(0, gridSize), color: GameTile.generateColor()));
+  }
+  return deck;
 }
