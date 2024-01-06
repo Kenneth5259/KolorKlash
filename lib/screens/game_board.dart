@@ -45,7 +45,7 @@ class _GameBoardState extends State<GameBoard> {
         ),
       ),
     ];
-    if(state.isGameOver) {
+    if(!state.showRestartMenu) {
       gameBoard.add(GameOver(state: state,));
     }
     return gameBoard;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/state/app_state.dart';
+
+import '../state/actions/update_show_restart_menu_action.dart';
 
 class GameOver extends StatelessWidget {
   final AppState state;
@@ -7,11 +10,13 @@ class GameOver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final store = StoreProvider.of<AppState>(context);
+
     return Padding(
         padding: const EdgeInsets.all(32),
         child: Container(
             decoration: BoxDecoration(
-                color: const Color.fromRGBO(196, 0, 255, 0.85),
+                color: const Color.fromRGBO(196, 0, 255, 0.95),
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
                 boxShadow: [
                   BoxShadow(color: Colors.black.withOpacity(0.7),
@@ -37,14 +42,32 @@ class GameOver extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text(
-                  "Score: ${state.score}",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Score: ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white
+                        )
+                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 0),
+                        child: Text(
+                          "${state.score}",
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white
+                          ),
+                        ),
+                      ),
+
+                  ],
                 ),
                 Text(
                   "Turns: ${state.turnCount}",
@@ -57,24 +80,26 @@ class GameOver extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 32),
-                  child: Column(
-                    children: [
-                      IconButton(
-                        onPressed: () {  },
-                        iconSize: 48,
-                        color: Colors.white,
-                        icon: const Icon(Icons.restart_alt_rounded),
-                      ),
-                      Text(
-                        "Replay",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white
+                  child: MaterialButton(
+                    onPressed: () => {store.dispatch(UpdateShowRestartMenuAction(false))},
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.restart_alt_rounded, color: Colors.white),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 24),
+                          child: Text(
+                            "Replay",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 )
               ],

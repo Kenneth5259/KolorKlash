@@ -8,6 +8,7 @@ class AppState {
   int turnCount = 0;
   int score = 0;
   bool isGameOver = false;
+  bool showRestartMenu = false;
   late List<List<TileContainerReduxState>> grid;
 
   late List<GameTile?> deck;
