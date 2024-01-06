@@ -4,6 +4,7 @@ import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 import 'package:kolor_klash/widgets/game_over.dart';
 import 'package:kolor_klash/widgets/tile_deck.dart';
 
+import '../state/actions/update_show_restart_menu_action.dart';
 import '../state/app_state.dart';
 
 class GameBoard extends StatefulWidget {
@@ -28,16 +29,25 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   List<Widget> getGameBoard(AppState state) {
+    final store = StoreProvider.of<AppState>(context);
     List<Widget> gameBoard = [
       Padding(
         padding: const EdgeInsets.fromLTRB(8, 32, 8, 8),
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Text("Turn Count: ${state.turnCount}"),
-                Text("Score: ${state.score}")
+                Expanded(child: Center(child: Text("Turn Count: ${state.turnCount}"))),
+                Expanded(
+                  child: Center(
+                    child: IconButton(
+                        splashRadius: 16,
+                        onPressed: () => {store.dispatch(UpdateShowRestartMenuAction(true))},
+                        icon: const Icon(Icons.settings)
+                    ),
+                  ),
+                ),
+                Expanded(child: Center(child: Text("Score: ${state.score}")))
               ],),
             ...generateRows(state.grid),
             const TileDeck()
@@ -45,7 +55,7 @@ class _GameBoardState extends State<GameBoard> {
         ),
       ),
     ];
-    if(!state.showRestartMenu) {
+    if(state.showRestartMenu) {
       gameBoard.add(GameOver(state: state,));
     }
     return gameBoard;
