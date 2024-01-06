@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/state/app_state.dart';
 
 import '../state/actions/update_show_restart_menu_action.dart';
 
-class GameOver extends StatelessWidget {
+class GameMenu extends StatelessWidget {
   final AppState state;
-  const GameOver({super.key, required this.state});
+  const GameMenu({super.key, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +84,7 @@ class GameOver extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 32),
                       child: MaterialButton(
-                        onPressed: () => {store.dispatch(UpdateShowRestartMenuAction(false))},
+                        onPressed: () => {store.dispatch(StartNewGameAction(3))},
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

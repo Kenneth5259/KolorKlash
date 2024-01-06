@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
-import 'package:kolor_klash/widgets/game_over.dart';
+import 'package:kolor_klash/widgets/game_menu.dart';
 import 'package:kolor_klash/widgets/tile_deck.dart';
 
 import '../state/actions/update_show_restart_menu_action.dart';
@@ -56,7 +56,7 @@ class _GameBoardState extends State<GameBoard> {
       ),
     ];
     if(state.showRestartMenu) {
-      gameBoard.add(GameOver(state: state,));
+      gameBoard.add(GameMenu(state: state,));
     }
     return gameBoard;
   }
