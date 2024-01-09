@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 
+import '../screens/main_menu_screen.dart';
 import '../widgets/game_tile.dart';
 import '../widgets/tile_container.dart';
 
@@ -7,9 +9,12 @@ class AppState {
   int gridSize;
   int turnCount = 0;
   int score = 0;
+  double gameTileHeight = 0;
+  double gameTileWidth = 0;
   bool isGameOver = false;
   bool showRestartMenu = false;
   late List<List<TileContainerReduxState>> grid;
+  Widget activeScreen = MainMenuScreen();
 
   late List<GameTile?> deck;
 

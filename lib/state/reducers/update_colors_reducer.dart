@@ -5,7 +5,7 @@ import 'package:kolor_klash/state/actions/update_colors_action.dart';
 import 'package:kolor_klash/state/subclasses/emptied_deck.dart';
 import 'package:kolor_klash/state/subclasses/flushed_map.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
-import 'package:kolor_klash/state/utilites/GameStateRules.dart';
+import 'package:kolor_klash/state/utilities/GameStateRules.dart';
 import 'package:kolor_klash/widgets/tile_container.dart';
 
 import '../../widgets/game_tile.dart';
