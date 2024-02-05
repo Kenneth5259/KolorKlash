@@ -1,86 +1,77 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
-
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/state/actions/update_colors_action.dart';
+import 'package:kolor_klash/widgets/game_tile.dart';
+import '../state/app_state.dart';
 import 'flex_column.dart';
 
 class TileContainer extends StatefulWidget {
   final int size;
-  // row index for the tile respective to grid
   final int row;
-  // column index for the tile respective to grid
   final int column;
 
-  String get coordinate => "($row,$column)";
-  GlobalKey<TileContainerState>? get globalKey => key as GlobalKey<TileContainerState>?;
-
-  const TileContainer({super.key, required this.size, required this.row, required this.column});
+  const TileContainer({Key? key, required this.size, required this.row, required this.column}) : super(key: key);
 
   @override
-  State<TileContainer> createState() => TileContainerState();
+  State<TileContainer> createState() => _TileContainerState();
 }
 
-class TileContainerState extends State<TileContainer> {
-  final Map<int, Color> colorMap = {};
-
-  int filledColumns = 0;
+class _TileContainerState extends State<TileContainer> {
+  int numberOfFilledColumns = 0;
 
   @override
   Widget build(BuildContext context) {
+    return storeConnectorWidget(context, (state) => DragTarget(
+        builder: (BuildContext context, List<dynamic> accepted, List<dynamic> rejected) => columnView(state),
+        onAccept: (GameTilePayload data) => updateColorMap(data, state),
+        onWillAccept: (GameTilePayload? data) => willAccept(data, state)
+    ));
+  }
 
-    Widget columnView = Padding(
+  Widget columnView(AppState state) {
+    return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.black)
-        ),
-        child: Row(
-          children: List.generate(widget.size, (index) => FlexColumn(color: colorMap[index]))
-          ,
-        ),
+      child: Row(
+        children: List.generate(widget.size, (index) => FlexColumn(color: colorMapFromState(state)[index])),
       ),
     );
-
-    return DragTarget(
-      builder: (BuildContext context, List<dynamic> accepted, List<dynamic> rejected) {
-        return columnView;
-      },
-      onAccept: (Map<int, Color> data) => updateColorMap(data),
-      onWillAccept: (Map<int, Color>? data) => willAccept(data),
-    );
   }
 
-  updateColorMap(Map<int, Color> data) {
-    setState((){
-      var entries = data.entries;
-      colorMap[entries.first.key] = entries.first.value;
-    });
+  void updateColorMap(GameTilePayload data, AppState state) {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(UpdateColorsAction(colorMap: data.colorMap, tile: widget, gameTileIndex: data.tileIndex));
   }
 
-  bool willAccept(Map<int, Color>? data) {
+  bool willAccept(GameTilePayload? data, AppState state) {
     if(data == null) {
       return false;
     }
-    var entries = data.entries;
-
-    bool canAccept = colorMap[entries.first.key] == null;
+    var entries = data.colorMap.entries;
+    bool canAccept = colorMapFromState(state)[entries.first.key] == null;
     if(!canAccept) {
       log("Wont accept");
     }
     return canAccept;
   }
 
-  Set<Color> hasColors() {
+  Widget storeConnectorWidget(BuildContext context, Function(AppState state) builderMethod){
+    return StoreConnector<AppState, AppState>(
+        converter: (store) => store.state,
+        builder: (_, state) => builderMethod(state));
+  }
+
+  Map<int, Color> colorMapFromState(AppState state) => state.grid[widget.row][widget.column].colorMap;
+
+  Set<Color> hasColors(AppState state) {
     Set<Color> colors = {};
-
-    for (MapEntry<int, Color> element in colorMap.entries) {
-      colors.add(element.value);
-    }
-
+    colorMapFromState(state).forEach((key, color) {
+      colors.add(color);
+    });
     return colors;
   }
 
   int getColumnCount() {
-    return filledColumns;
+    return numberOfFilledColumns;
   }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
-import 'package:kolor_klash/screens/game_board.dart';
 import 'package:kolor_klash/state/app_reducer.dart';
 import 'package:kolor_klash/state/app_state.dart';
+import 'package:kolor_klash/styles/background_gradient.dart';
 import 'package:redux/redux.dart';
 
 void main() {
@@ -24,11 +24,13 @@ class MyApp extends StatelessWidget {
     return StoreProvider<AppState>(
       store: store,
       child: MaterialApp(
-          theme: ThemeData(scaffoldBackgroundColor: Colors.white),
-          home: const Scaffold(
-            backgroundColor: Colors.white,
-            body: SafeArea(
-                child: GameBoard()
+          home: Scaffold(
+            body: Container(
+              decoration: backgroundBoxDecoration,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  child: store.state.activeScreen,
+                )
             ),
           )
         ),

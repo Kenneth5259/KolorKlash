@@ -1,11 +1,20 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 
+import '../screens/main_menu_screen.dart';
 import '../widgets/game_tile.dart';
 import '../widgets/tile_container.dart';
 
 class AppState {
   int gridSize;
-  late List<List<TileContainer>> grid;
+  int turnCount = 0;
+  int score = 0;
+  double gameTileHeight = 0;
+  double gameTileWidth = 0;
+  bool isGameOver = false;
+  bool showRestartMenu = false;
+  late List<List<TileContainerReduxState>> grid;
+  Widget activeScreen = MainMenuScreen();
 
   late List<GameTile?> deck;
 
@@ -13,12 +22,12 @@ class AppState {
     grid = [];
     deck = [];
     for(var i = 0; i < gridSize; i++) {
-        List<TileContainer> row = [];
+        List<TileContainerReduxState> row = [];
         for(var j = 0; j < gridSize; j++) {
           //GlobalKey<TileContainerState> tileContainerKey = GlobalKey();
-          row.add(TileContainer(size: gridSize, row: i, column: j));
+          row.add(TileContainerReduxState(container: TileContainer(size: gridSize, row: i, column: j)));
         }
-        deck.add(GameTile(max: gridSize, index: i,));
+        deck.add(GameTile(max: gridSize, index: i, color: GameTile.generateColor(), colorIndex: GameTile.generateColumnIndex(0, gridSize),));
         grid.add(row);
     }
   }
