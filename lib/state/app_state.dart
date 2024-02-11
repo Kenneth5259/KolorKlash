@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kolor_klash/screens/game_board_screen.dart';
+import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 
 import '../screens/main_menu_screen.dart';
@@ -14,7 +16,7 @@ class AppState {
   bool isGameOver = false;
   bool showRestartMenu = false;
   late List<List<TileContainerReduxState>> grid;
-  Widget activeScreen = MainMenuScreen();
+  Widget activeScreen = NewGameScreen();
 
   late List<GameTile?> deck;
 
