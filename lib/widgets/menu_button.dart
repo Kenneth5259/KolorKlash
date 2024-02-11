@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kolor_klash/widgets/white_menu_text.dart';
 
 class MenuButton extends StatelessWidget {
   final String buttonText;
@@ -12,22 +13,9 @@ class MenuButton extends StatelessWidget {
       color: Colors.white54,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [buildStyledText(buttonText)],
+        children: [WhiteStyledText(text: buttonText)],
       ),
       onPressed: () => onPressed(),
-    );
-  }
-
-  Padding buildStyledText(String text) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(
-        text,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 36,
-        ),
-      ),
     );
   }
 }
