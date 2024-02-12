@@ -4,6 +4,7 @@ import 'package:kolor_klash/state/app_state.dart';
 
 AppState startNewGameReducer(AppState previousState, StartNewGameAction action) {
   previousState.difficulty = action.difficulty;
+  previousState.gridSize = action.gridSize;
   previousState.activeScreen = const GameBoard();
   previousState.showRestartMenu = false;
   previousState.resetGameboard(action.gridSize);

@@ -107,7 +107,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 buildButton('Play', offsetAnimation1, () => newGameScreen()),
+                // TODO: Add Score Board Screen & Score History Locally
                 buildButton('Score Board', offsetAnimation2, (){}),
+                // TODO: Add Settings Menu, dispatch for action
                 buildButton('Settings', offsetAnimation3, (){}),
               ],
             ),
