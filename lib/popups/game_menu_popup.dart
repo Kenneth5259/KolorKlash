@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/screens/main_menu_screen.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/state/app_state.dart';
 import 'package:kolor_klash/styles/background_gradient.dart';
 import 'package:kolor_klash/widgets/menu_button.dart';
 import 'package:redux/redux.dart';
 
+import '../state/actions/set_active_screen_action.dart';
 import '../state/actions/update_show_restart_menu_action.dart';
 
 class GameMenu extends StatefulWidget {
@@ -26,6 +28,16 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     Future.delayed(Duration(milliseconds: 200), ()
     {
       store.dispatch(StartNewGameAction(widget.state.gridSize, widget.state.difficulty));
+    });
+  }
+
+  void returnToMainMenu(Store<AppState> store) {
+    setState(() {
+      _opacity = 0.0;   // Start fade-out animation before closing the menu
+    });
+    Future.delayed(Duration(milliseconds: 200), ()
+    {
+      store.dispatch(SetActiveScreenAction(MainMenuScreen()));
     });
   }
 
@@ -99,7 +111,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
                                 // Closes the current popup and opens a game options popup for volume, haptics etc
                                 MenuButton(buttonText: 'Options', onPressed: (){}),
                                 // Closes the menu and returns the user to the opening screen of the app
-                                MenuButton(buttonText: 'Quit', onPressed: (){}),
+                                MenuButton(buttonText: 'Quit', onPressed: () => returnToMainMenu(store)),
                               ],
                             ),
                           )

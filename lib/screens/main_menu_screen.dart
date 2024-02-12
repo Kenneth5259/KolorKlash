@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/screens/new_game_screen.dart';
+import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
 
+import '../state/app_state.dart';
 import '../widgets/menu_button.dart';
 
 class MainMenuScreen extends StatefulWidget {
@@ -23,6 +27,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
       position: animation,
       child: MenuButton(buttonText: label, onPressed: onPressed),
     );
+  }
+
+  void newGameScreen() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(SetActiveScreenAction(const NewGameScreen()));
   }
 
   @override
@@ -97,7 +106,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                buildButton('Play', offsetAnimation1, (){}),
+                buildButton('Play', offsetAnimation1, () => newGameScreen()),
                 buildButton('Score Board', offsetAnimation2, (){}),
                 buildButton('Settings', offsetAnimation3, (){}),
               ],
