@@ -25,7 +25,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     });
     Future.delayed(Duration(milliseconds: 200), ()
     {
-      store.dispatch(StartNewGameAction(widget.state.gridSize));
+      store.dispatch(StartNewGameAction(widget.state.gridSize, widget.state.difficulty));
     });
   }
 

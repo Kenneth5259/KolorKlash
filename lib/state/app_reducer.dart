@@ -22,7 +22,7 @@ AppState appReducer(AppState previousState, dynamic action) {
     return updateShowRestartMenuActionReducer(previousState, action);
   }
   if(action is StartNewGameAction) {
-    return startNewGameReducer(action.gridSize);
+    return startNewGameReducer(previousState, action);
   }
   if(action is SetGameTileSizeAction) {
     return setGameTileSizeReducer(previousState, action);

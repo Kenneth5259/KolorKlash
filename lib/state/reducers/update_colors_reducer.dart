@@ -57,6 +57,7 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   updatedAppState.turnCount = turnCount;
   updatedAppState.isGameOver = GameStateRules.isGameOver(grid, newDeck);
   updatedAppState.showRestartMenu = updatedAppState.isGameOver;
+  updatedAppState.activeScreen = previousState.activeScreen;
   if(updatedAppState.isGameOver) {
     log(updatedAppState.isGameOver.toString());
   }

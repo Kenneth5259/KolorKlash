@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/Extensions/string_extensions.dart';
+import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/widgets/menu_button.dart';
 import 'package:kolor_klash/widgets/white_menu_text.dart';
 
+import '../state/app_state.dart';
 import '../state/subclasses/enums.dart';
 
 class NewGameScreen extends StatefulWidget {
@@ -54,6 +57,11 @@ class _NewGameScreenState extends State<NewGameScreen> {
       selectedGridSize = newValue!,
       gridSizeMap = reorderMap(gridSizeMap, newValue)
     });
+  }
+
+  void dispatchNewGameAction() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(StartNewGameAction(gridSizeMap[gridSizeMap.keys.first]!, selectedDifficulty));
   }
 
   Widget buildLabeledDropdown<T>(String title, Map<T, dynamic> options, void Function(T?)? onChanged, T selectedValue) {
@@ -124,7 +132,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                 ],
               ),
             ),
-            MenuButton(buttonText: 'Start New Game', onPressed: (){})
+            MenuButton(buttonText: 'Start New Game', onPressed: () => dispatchNewGameAction())
           ],
         ),
       ),
