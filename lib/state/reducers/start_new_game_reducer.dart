@@ -7,6 +7,7 @@ AppState startNewGameReducer(AppState previousState, StartNewGameAction action) 
   previousState.gridSize = action.gridSize;
   previousState.activeScreen = const GameBoard();
   previousState.showRestartMenu = false;
+  previousState.showSettingsMenu = false;
   previousState.resetGameboard(action.gridSize);
   previousState.resetStats();
   return previousState;

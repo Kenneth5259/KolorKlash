@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:kolor_klash/screens/game_board_screen.dart';
 import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/state/subclasses/enums.dart';
@@ -15,8 +16,10 @@ class AppState {
   int score = 0;
   double gameTileHeight = 0;
   double gameTileWidth = 0;
+  bool initialized = false;
   bool isGameOver = false;
   bool showRestartMenu = false;
+  bool showSettingsMenu = false;
   late List<List<TileContainerReduxState>> grid;
   Widget? activeScreen;
 

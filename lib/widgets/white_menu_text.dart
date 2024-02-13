@@ -12,7 +12,7 @@ class WhiteStyledText extends StatelessWidget {
         text,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 36,
+          fontSize: 16,
         ),
       ),
     );;

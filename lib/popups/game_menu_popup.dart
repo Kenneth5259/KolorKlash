@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/screens/main_menu_screen.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
+import 'package:kolor_klash/state/actions/update_show_settings_menu_action.dart';
 import 'package:kolor_klash/state/app_state.dart';
 import 'package:kolor_klash/styles/background_gradient.dart';
 import 'package:kolor_klash/widgets/menu_button.dart';
@@ -39,6 +40,10 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     {
       store.dispatch(SetActiveScreenAction(MainMenuScreen()));
     });
+  }
+
+  void settingsMenu(Store<AppState> store) {
+    store.dispatch(UpdateShowSettingsMenuAction(true));
   }
 
   @override
@@ -109,7 +114,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
                                 // Restarts the game with the users current game settings
                                 MenuButton(buttonText: 'Restart', onPressed: () => restartGame(store)),
                                 // Closes the current popup and opens a game options popup for volume, haptics etc
-                                MenuButton(buttonText: 'Options', onPressed: (){}),
+                                MenuButton(buttonText: 'Options', onPressed: () => settingsMenu(store)),
                                 // Closes the menu and returns the user to the opening screen of the app
                                 MenuButton(buttonText: 'Quit', onPressed: () => returnToMainMenu(store)),
                               ],

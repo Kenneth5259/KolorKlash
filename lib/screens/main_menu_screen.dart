@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
+import 'package:kolor_klash/state/actions/update_show_settings_menu_action.dart';
 
+import '../state/actions/mark_initialized_action.dart';
 import '../state/app_state.dart';
 import '../widgets/menu_button.dart';
 
@@ -22,16 +24,34 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
   late Animation<Offset> offsetAnimation2;
   late Animation<Offset> offsetAnimation3;
 
+  int animationCount = 0;
+
   Widget buildButton(String label, Animation<Offset> animation, Function onPressed) {
-    return SlideTransition(
-      position: animation,
-      child: MenuButton(buttonText: label, onPressed: onPressed),
+    return StoreConnector<AppState, AppState>(
+      converter: (store) => store.state,
+      builder: (BuildContext context, AppState state) =>
+      !state.initialized ?
+          SlideTransition(
+            position: animation,
+            child: MenuButton(buttonText: label, onPressed: onPressed),
+          ) :
+          MenuButton(buttonText: label, onPressed: onPressed)
     );
   }
 
   void newGameScreen() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(SetActiveScreenAction(const NewGameScreen()));
+  }
+
+  void settingsMenu() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(UpdateShowSettingsMenuAction(true));
+  }
+
+  void markInitialized() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(MarkInitializedAction());
   }
 
   @override
@@ -41,6 +61,12 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     void _initAnimations(Duration delay, AnimationController controller, Animation<Offset> offsetAnimation) async {
       await Future.delayed(delay);
       controller.forward();
+      setState(() {
+        ++animationCount;
+      });
+      if(animationCount > 2) {
+        markInitialized();
+      }
     }
 
     controller1 = AnimationController(
@@ -110,7 +136,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
                 // TODO: Add Score Board Screen & Score History Locally
                 buildButton('Score Board', offsetAnimation2, (){}),
                 // TODO: Add Settings Menu, dispatch for action
-                buildButton('Settings', offsetAnimation3, (){}),
+                buildButton('Settings', offsetAnimation3, () => settingsMenu()),
               ],
             ),
           ),
