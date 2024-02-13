@@ -49,9 +49,6 @@ class _TileContainerState extends State<TileContainer> {
     }
     var entries = data.colorMap.entries;
     bool canAccept = colorMapFromState(state)[entries.first.key] == null;
-    if(!canAccept) {
-      log("Wont accept");
-    }
     return canAccept;
   }
 
