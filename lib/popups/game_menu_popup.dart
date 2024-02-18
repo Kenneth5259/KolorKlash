@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/screens/main_menu_screen.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
+import 'package:kolor_klash/state/actions/update_show_settings_menu_action.dart';
 import 'package:kolor_klash/state/app_state.dart';
 import 'package:kolor_klash/styles/background_gradient.dart';
 import 'package:kolor_klash/widgets/menu_button.dart';
 import 'package:redux/redux.dart';
 
+import '../state/actions/set_active_screen_action.dart';
 import '../state/actions/update_show_restart_menu_action.dart';
 
 class GameMenu extends StatefulWidget {
@@ -13,7 +16,7 @@ class GameMenu extends StatefulWidget {
   const GameMenu({super.key, required this.state});
 
   @override
-  _GameMenuState createState() => _GameMenuState();
+  State<GameMenu> createState() => _GameMenuState();
 }
 
 class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin {
@@ -23,10 +26,24 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     setState(() {
       _opacity = 0.0;   // Start fade-out animation before closing the menu
     });
-    Future.delayed(Duration(milliseconds: 200), ()
+    Future.delayed(const Duration(milliseconds: 200), ()
     {
-      store.dispatch(StartNewGameAction(widget.state.gridSize));
+      store.dispatch(StartNewGameAction(widget.state.gridSize, widget.state.difficulty));
     });
+  }
+
+  void returnToMainMenu(Store<AppState> store) {
+    setState(() {
+      _opacity = 0.0;   // Start fade-out animation before closing the menu
+    });
+    Future.delayed(const Duration(milliseconds: 200), ()
+    {
+      store.dispatch(SetActiveScreenAction(MainMenuScreen()));
+    });
+  }
+
+  void settingsMenu(Store<AppState> store) {
+    store.dispatch(UpdateShowSettingsMenuAction(true));
   }
 
   @override
@@ -43,7 +60,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     setState(() {
       _opacity = 0.0;   // Start fade-out animation before closing the menu
     });
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       store.dispatch(UpdateShowRestartMenuAction(false));
     });
   }
@@ -54,7 +71,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     return AnimatedOpacity(
       opacity: _opacity,
       curve: Curves.easeInOut,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       child: Stack(
         children: [
           Padding(
@@ -97,9 +114,9 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
                                 // Restarts the game with the users current game settings
                                 MenuButton(buttonText: 'Restart', onPressed: () => restartGame(store)),
                                 // Closes the current popup and opens a game options popup for volume, haptics etc
-                                MenuButton(buttonText: 'Options', onPressed: (){}),
+                                MenuButton(buttonText: 'Options', onPressed: () => settingsMenu(store)),
                                 // Closes the menu and returns the user to the opening screen of the app
-                                MenuButton(buttonText: 'Quit', onPressed: (){}),
+                                MenuButton(buttonText: 'Quit', onPressed: () => returnToMainMenu(store)),
                               ],
                             ),
                           )

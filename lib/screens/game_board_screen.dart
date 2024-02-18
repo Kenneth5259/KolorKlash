@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:redux/redux.dart';
 
 import '../popups/game_menu_popup.dart';
@@ -55,6 +56,9 @@ class _GameBoardState extends State<GameBoard> {
     ];
     if(state.showRestartMenu) {
       gameBoardChildren.add(getGameMenu(state));
+    }
+    if(state.showSettingsMenu) {
+      gameBoardChildren.add(const SettingsMenu());
     }
     return gameBoardChildren;
   }

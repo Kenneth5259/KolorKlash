@@ -4,6 +4,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/state/app_reducer.dart';
 import 'package:kolor_klash/state/app_state.dart';
 import 'package:kolor_klash/styles/background_gradient.dart';
+import 'package:kolor_klash/widgets/screen_container.dart';
 import 'package:redux/redux.dart';
 
 void main() {
@@ -27,9 +28,9 @@ class MyApp extends StatelessWidget {
           home: Scaffold(
             body: Container(
               decoration: backgroundBoxDecoration,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  child: store.state.activeScreen,
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32.0),
+                  child: ScreenContainer(),
                 )
             ),
           )
