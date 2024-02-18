@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
 import 'package:kolor_klash/state/actions/update_show_settings_menu_action.dart';
@@ -9,7 +10,7 @@ import '../state/app_state.dart';
 import '../widgets/menu_button.dart';
 
 class MainMenuScreen extends StatefulWidget {
-  MainMenuScreen({super.key});
+  const MainMenuScreen({super.key});
 
   @override
   State<MainMenuScreen> createState() => _MainMenuScreenState();
@@ -39,12 +40,69 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     );
   }
 
+  Widget? buildSettingsMenu() {
+    Widget value =  StoreConnector<AppState, AppState>(
+        converter: (store) => store.state,
+        builder: (BuildContext context, AppState state) =>
+          state.showSettingsMenu ? const SettingsMenu() : Container()
+    );
+    return value is! Container ? value : null;
+  }
+
+  List<Widget> buildMenuStack() {
+    List<Widget> menuStack = [
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          const Expanded(
+            child: Center(
+              child: Text(
+                'Kolor Klash',
+                style: TextStyle(fontSize: 48.0, color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  buildButton('Play', offsetAnimation1, () => newGameScreen()),
+                  // TODO: Add Score Board Screen & Score History Locally
+                  buildButton('Score Board', offsetAnimation2, (){}),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: IconButton(
+                padding: const EdgeInsets.all(16),
+                color: Colors.white,
+                iconSize: 48,
+                icon: const Icon(Icons.settings),
+                onPressed: () => showSettingsMenu(),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ];
+    Widget? settingsMenu = buildSettingsMenu();
+    if(settingsMenu != null) {
+      menuStack.add(settingsMenu);
+    }
+    return menuStack;
+  }
+
   void newGameScreen() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(SetActiveScreenAction(const NewGameScreen()));
   }
 
-  void settingsMenu() {
+  void showSettingsMenu() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(UpdateShowSettingsMenuAction(true));
   }
@@ -58,7 +116,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
   void initState() {
     super.initState();
 
-    void _initAnimations(Duration delay, AnimationController controller, Animation<Offset> offsetAnimation) async {
+    void initAnimations(Duration delay, AnimationController controller, Animation<Offset> offsetAnimation) async {
       await Future.delayed(delay);
       controller.forward();
       setState(() {
@@ -70,7 +128,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     }
 
     controller1 = AnimationController(
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
     offsetAnimation1 = Tween<Offset>(
@@ -83,7 +141,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     ));
 
     controller2 = AnimationController(
-      duration: Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
     offsetAnimation2 = Tween<Offset>(
@@ -96,7 +154,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     ));
 
     controller3 = AnimationController(
-      duration: Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
     offsetAnimation3 = Tween<Offset>(
@@ -108,52 +166,15 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
       reverseCurve: Curves.easeOut,
     ));
 
-    _initAnimations(const Duration(milliseconds: 0), controller1, offsetAnimation1);
-    _initAnimations(const Duration(milliseconds: 400), controller2, offsetAnimation2);
-    _initAnimations(const Duration(milliseconds: 400), controller3, offsetAnimation3);
+    initAnimations(const Duration(milliseconds: 100), controller1, offsetAnimation1);
+    initAnimations(const Duration(milliseconds: 500), controller2, offsetAnimation2);
+    initAnimations(const Duration(milliseconds: 900), controller3, offsetAnimation3);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        const Expanded(
-          child: Center(
-            child: Text(
-              'Kolor Klash',
-              style: TextStyle(fontSize: 48.0, color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                buildButton('Play', offsetAnimation1, () => newGameScreen()),
-                // TODO: Add Score Board Screen & Score History Locally
-                buildButton('Score Board', offsetAnimation2, (){}),
-                // TODO: Add Settings Menu, dispatch for action
-                buildButton('Settings', offsetAnimation3, () => settingsMenu()),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Align(
-            alignment: FractionalOffset.bottomCenter,
-            child: IconButton(
-              padding: EdgeInsets.all(16),
-              color: Colors.white,
-              iconSize: 48,
-              icon: const Icon(Icons.settings),
-              onPressed: () {},
-            ),
-          ),
-        ),
-      ],
+    return Stack(
+      children: buildMenuStack(),
     );
   }
 

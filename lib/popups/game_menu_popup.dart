@@ -16,7 +16,7 @@ class GameMenu extends StatefulWidget {
   const GameMenu({super.key, required this.state});
 
   @override
-  _GameMenuState createState() => _GameMenuState();
+  State<GameMenu> createState() => _GameMenuState();
 }
 
 class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin {
@@ -26,7 +26,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     setState(() {
       _opacity = 0.0;   // Start fade-out animation before closing the menu
     });
-    Future.delayed(Duration(milliseconds: 200), ()
+    Future.delayed(const Duration(milliseconds: 200), ()
     {
       store.dispatch(StartNewGameAction(widget.state.gridSize, widget.state.difficulty));
     });
@@ -36,7 +36,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     setState(() {
       _opacity = 0.0;   // Start fade-out animation before closing the menu
     });
-    Future.delayed(Duration(milliseconds: 200), ()
+    Future.delayed(const Duration(milliseconds: 200), ()
     {
       store.dispatch(SetActiveScreenAction(MainMenuScreen()));
     });
@@ -60,7 +60,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     setState(() {
       _opacity = 0.0;   // Start fade-out animation before closing the menu
     });
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       store.dispatch(UpdateShowRestartMenuAction(false));
     });
   }
@@ -71,7 +71,7 @@ class _GameMenuState extends State<GameMenu> with SingleTickerProviderStateMixin
     return AnimatedOpacity(
       opacity: _opacity,
       curve: Curves.easeInOut,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       child: Stack(
         children: [
           Padding(

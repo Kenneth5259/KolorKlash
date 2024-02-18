@@ -3,5 +3,6 @@ import 'package:kolor_klash/state/app_state.dart';
 
 AppState activeScreenReducer(AppState previousState, SetActiveScreenAction action) {
   previousState.activeScreen = action.screen;
+  previousState.initialized = true;
   return previousState;
 }

@@ -26,7 +26,7 @@ class AppState {
   late List<GameTile?> deck;
 
   AppState({required this.gridSize}) {
-    activeScreen = activeScreen ?? const NewGameScreen();
+    activeScreen = activeScreen ?? MainMenuScreen();
     resetGameboard(gridSize);
   }
 
