@@ -15,6 +15,14 @@ class TileContainer extends StatefulWidget {
 
   @override
   State<TileContainer> createState() => _TileContainerState();
+
+  Map toJson() {
+    return {
+      'size': size,
+      'row': row,
+      'column': column
+    };
+  }
 }
 
 class _TileContainerState extends State<TileContainer> {

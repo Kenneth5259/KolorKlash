@@ -7,4 +7,11 @@ class TileContainerReduxState {
   Map<int, Color> colorMap = {};
 
   TileContainerReduxState({required this.container});
+
+  Map toJson() {
+    return {
+      'container': container.toJson(),
+      'colorMap': colorMap
+    };
+  }
 }

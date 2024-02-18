@@ -21,12 +21,12 @@ class AppState {
   bool showRestartMenu = false;
   bool showSettingsMenu = false;
   late List<List<TileContainerReduxState>> grid;
-  Widget? activeScreen;
 
+  Widget? activeScreen;
   late List<GameTile?> deck;
 
   AppState({required this.gridSize}) {
-    activeScreen = activeScreen ?? MainMenuScreen();
+    activeScreen = activeScreen ?? const MainMenuScreen();
     resetGameboard(gridSize);
   }
 
@@ -49,4 +49,43 @@ class AppState {
     }
   }
 
+  Map toJson() {
+    return {
+      // basic types
+      'gridSize': gridSize,
+      'difficulty': difficulty,
+      'turnCount': turnCount,
+      'score': score,
+      'gameTileHeight': gameTileHeight,
+      'gameTileWidth': gameTileWidth,
+      'initialized': initialized,
+      'isGameOver': isGameOver,
+      'showRestartMenu': showRestartMenu,
+      'showSettingsMenu': showSettingsMenu,
+
+      // lists
+      'deck': getDeckJson(),
+      'grid': getGridJSON()
+    };
+  }
+
+  List getDeckJson() {
+    List deckJson = [];
+    for (GameTile? tile in deck) {
+      deckJson.add(tile != null ? tile.toJson() : 'null');
+    }
+    return deckJson;
+  }
+
+  List getGridJSON() {
+    List gridJson = [];
+    for(List<TileContainerReduxState> row in grid) {
+      List rowJson = [];
+      for(TileContainerReduxState tile in row) {
+        rowJson.add(tile.toJson());
+      }
+      gridJson.add(rowJson);
+    }
+    return gridJson;
+  }
 }
