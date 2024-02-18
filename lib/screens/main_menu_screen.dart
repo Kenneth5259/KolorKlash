@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:kolor_klash/screens/new_game_screen.dart';
+import 'package:kolor_klash/services/local_file_service.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
 import 'package:kolor_klash/state/actions/update_show_settings_menu_action.dart';
 
+import '../state/actions/load_existing_game_action.dart';
 import '../state/actions/mark_initialized_action.dart';
 import '../state/app_state.dart';
 import '../widgets/menu_button.dart';
@@ -68,9 +70,10 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  buildButton('Play', offsetAnimation1, () => newGameScreen()),
+                  buildButton('Play New Game', offsetAnimation1, () => newGameScreen()),
+                  buildButton('Continue Game', offsetAnimation2, () => loadExistingGame()),
                   // TODO: Add Score Board Screen & Score History Locally
-                  buildButton('Score Board', offsetAnimation2, (){}),
+                  buildButton('Score Board', offsetAnimation3, (){}),
                 ],
               ),
             ),
@@ -100,6 +103,13 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
   void newGameScreen() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(SetActiveScreenAction(const NewGameScreen()));
+  }
+  void loadExistingGame() async {
+    final store = StoreProvider.of<AppState>(context);
+
+    AppState? loadedState = await LocalFileService.readAppState();
+
+    store.dispatch(LoadExistingGameAction(loadedState: loadedState ?? store.state));
   }
 
   void showSettingsMenu() {

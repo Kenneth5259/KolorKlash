@@ -38,7 +38,7 @@ class GameTile extends StatefulWidget {
       'max': max,
       'index': index,
       'colorIndex': colorIndex,
-      'color': color
+      'color': color.toString()
     };
   }
 }

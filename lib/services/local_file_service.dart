@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
@@ -20,8 +21,12 @@ class LocalFileService {
   static Future<File> writeAppState(AppState appState) async {
     final file = await _localAppState;
 
+    // log file contents
+    String appStateString = json.encode(appState.toJson());
+    log(appStateString);
+
     // Write the file
-    return file.writeAsString(appState.toJson().toString());
+    return file.writeAsString(appStateString);
   }
 
   static Future<AppState?> readAppState() async {

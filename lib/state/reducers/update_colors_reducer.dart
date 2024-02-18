@@ -8,6 +8,7 @@ import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 import 'package:kolor_klash/state/utilities/GameStateRules.dart';
 import 'package:kolor_klash/widgets/tile_container.dart';
 
+import '../../services/local_file_service.dart';
 import '../../widgets/game_tile.dart';
 import '../app_state.dart';
 
@@ -61,6 +62,7 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   if(updatedAppState.isGameOver) {
     log(updatedAppState.isGameOver.toString());
   }
+  LocalFileService.writeAppState(previousState);
   return updatedAppState;
 }
 

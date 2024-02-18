@@ -1,7 +1,6 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:kolor_klash/popups/settings_menu_popup.dart';
-import 'package:kolor_klash/screens/game_board_screen.dart';
-import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/state/subclasses/enums.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 
@@ -53,15 +52,15 @@ class AppState {
     return {
       // basic types
       'gridSize': gridSize,
-      'difficulty': difficulty,
+      'difficulty': difficulty.toString(),
       'turnCount': turnCount,
       'score': score,
       'gameTileHeight': gameTileHeight,
       'gameTileWidth': gameTileWidth,
-      'initialized': initialized,
-      'isGameOver': isGameOver,
-      'showRestartMenu': showRestartMenu,
-      'showSettingsMenu': showSettingsMenu,
+      'initialized': true,
+      'isGameOver': false,
+      'showRestartMenu': false,
+      'showSettingsMenu': false,
 
       // lists
       'deck': getDeckJson(),
@@ -87,5 +86,24 @@ class AppState {
       gridJson.add(rowJson);
     }
     return gridJson;
+  }
+
+  static AppState loadFromJson(String json) {
+    Map values = jsonDecode(json);
+    AppState loadedState = AppState(gridSize: values["gridSize"]);
+    loadedState.difficulty = stringToDifficulty(values["difficulty"]);
+    loadedState.turnCount = int.parse(values["turnCount"]);
+    loadedState.score = int.parse(values["score"]);
+    loadedState.gameTileWidth = double.parse(values["gameTileWidth"]);
+    loadedState.gameTileHeight = double.parse(values["gameTileHeight"]);
+    loadedState.initialized = true;
+    loadedState.isGameOver = false;
+    loadedState.showSettingsMenu = false;
+    loadedState.showRestartMenu = false;
+
+    // TODO: Load Deck from File
+
+    // TODO: Load Grid from File
+    return loadedState;
   }
 }
