@@ -9,7 +9,7 @@ import 'package:redux/redux.dart';
 
 void main() {
 
-  final store = Store<AppState>(appReducer, initialState: AppState(gridSize: 3));
+  final store = Store<AppState>(appReducer, initialState: AppState(gridSize: 3), syncStream: true);
 
   runApp(MyApp(store: store));
 }

@@ -80,7 +80,7 @@ EmptiedDeck handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount) {
 /// method to remove the colors from a color map and return the number of times that color was in the map
 FlushedMap flushColor(Map<int, Color> colorMap, Color color) {
   int colorCount = colorMap.length;
-  colorMap.removeWhere((key, value) => value == color);
+  colorMap.removeWhere((key, value) => value.value == color.value);
   colorCount -= colorMap.length;
   return FlushedMap(colorMap: colorMap, colorCount: colorCount);
 }

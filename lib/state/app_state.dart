@@ -1,7 +1,6 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:kolor_klash/popups/settings_menu_popup.dart';
-import 'package:kolor_klash/screens/game_board_screen.dart';
-import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/state/subclasses/enums.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 
@@ -21,12 +20,12 @@ class AppState {
   bool showRestartMenu = false;
   bool showSettingsMenu = false;
   late List<List<TileContainerReduxState>> grid;
-  Widget? activeScreen;
 
+  Widget? activeScreen;
   late List<GameTile?> deck;
 
   AppState({required this.gridSize}) {
-    activeScreen = activeScreen ?? MainMenuScreen();
+    activeScreen = activeScreen ?? const MainMenuScreen();
     resetGameboard(gridSize);
   }
 
@@ -49,4 +48,90 @@ class AppState {
     }
   }
 
+  Map toJson() {
+    return {
+      // basic types
+      'gridSize': gridSize,
+      'difficulty': difficulty.toString(),
+      'turnCount': turnCount,
+      'score': score,
+      'gameTileHeight': gameTileHeight,
+      'gameTileWidth': gameTileWidth,
+      'initialized': true,
+      'isGameOver': false,
+      'showRestartMenu': false,
+      'showSettingsMenu': false,
+
+      // lists
+      'deck': getDeckJson(),
+      'grid': getGridJSON()
+    };
+  }
+
+  List getDeckJson() {
+    List deckJson = [];
+    for (GameTile? tile in deck) {
+      deckJson.add(tile != null ? tile.toJson() : 'null');
+    }
+    return deckJson;
+  }
+
+  List getGridJSON() {
+    List gridJson = [];
+    for(List<TileContainerReduxState> row in grid) {
+      List rowJson = [];
+      for(TileContainerReduxState tile in row) {
+        rowJson.add(tile.toJson());
+      }
+      gridJson.add(rowJson);
+    }
+    return gridJson;
+  }
+
+  static AppState loadFromJson(String json) {
+    Map values = jsonDecode(json);
+    AppState loadedState = AppState(gridSize: values["gridSize"]);
+    loadedState.difficulty = stringToDifficulty(values['difficulty']);
+    loadedState.turnCount = values["turnCount"];
+    loadedState.score = values["score"];
+    loadedState.gameTileWidth = values["gameTileWidth"];
+    loadedState.gameTileHeight = values["gameTileHeight"];
+    loadedState.initialized = true;
+    loadedState.isGameOver = false;
+    loadedState.showSettingsMenu = false;
+    loadedState.showRestartMenu = false;
+
+    loadedState.deck = getDeckFromJson(values['deck']);
+    loadedState.grid = getGridFromJson(values['grid']);
+
+    return loadedState;
+  }
+
+  static List<GameTile?> getDeckFromJson(Iterable items) {
+    List<GameTile?> loadedDeck = [];
+
+    for (var item in items) {
+      if(item == null || item == "null") {
+        loadedDeck.add(null);
+        continue;
+      }
+      GameTile tile = GameTile.loadFromJsonMap(item);
+      loadedDeck.add(tile);
+    }
+
+    return loadedDeck;
+  }
+
+  static List<List<TileContainerReduxState>> getGridFromJson(Iterable grid) {
+    List<List<TileContainerReduxState>> loadedGrid = [];
+    for(Iterable row in grid) {
+      List<TileContainerReduxState> loadedRow = [];
+      for(var item in row) {
+        TileContainerReduxState loadedCell = TileContainerReduxState.loadFromJson(item);
+        loadedRow.add(loadedCell);
+      }
+      loadedGrid.add(loadedRow);
+    }
+    return loadedGrid;
+  }
 }

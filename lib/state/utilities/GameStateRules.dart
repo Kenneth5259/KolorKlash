@@ -59,7 +59,7 @@ class GameStateRules {
     // populate with each tile for the colum or stop if there isn't the color
     for(var row in grid) {
       var currentTile = row[tile.column];
-      if(!currentTile.colorMap.containsValue(color)) {
+      if(!hasColorMatch(currentTile.colorMap, color)) {
         return [];
       }
       column.add(row[tile.column]);
@@ -74,7 +74,7 @@ class GameStateRules {
     List<TileContainerReduxState> row = grid[tile.row];
 
     for(var currentTile in row) {
-      if(!currentTile.colorMap.containsValue(color)) {
+      if(!hasColorMatch(currentTile.colorMap, color)) {
         return [];
       }
     }
@@ -91,7 +91,7 @@ class GameStateRules {
       var columnIndex = rowIndex;
       // get the tile
       var tile = grid[rowIndex][columnIndex];
-      if(!tile.colorMap.containsValue(color)) {
+      if(!hasColorMatch(tile.colorMap, color)) {
         return [];
       }
       diagonal.add(tile);
@@ -109,7 +109,7 @@ class GameStateRules {
       var columnIndex = grid.length - 1 - rowIndex;
       // get the tile
       var tile = grid[rowIndex][columnIndex];
-      if(!tile.colorMap.containsValue(color)) {
+      if(!hasColorMatch(tile.colorMap, color)) {
         return [];
       }
       diagonal.add(tile);
@@ -142,4 +142,12 @@ class GameStateRules {
     return isGameOver;
   }
 
+  static bool hasColorMatch(Map<int, Color> map, Color color) {
+    for(var entry in map.entries) {
+      if(entry.value.value == color.value) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

@@ -31,6 +31,21 @@ class GameTile extends StatefulWidget {
     Random random = Random();
     return min + random.nextInt(max - min);
   }
+
+  Map toJson() {
+    return {
+      'min': min,
+      'max': max,
+      'index': index,
+      'colorIndex': colorIndex,
+      'color': color?.value
+    };
+  }
+  static GameTile loadFromJsonMap(Map item) {
+    Color color = Color(item['color']);
+    GameTile tile = GameTile(max: item['max'], index: item['index'], colorIndex: item['colorIndex'], color: color);
+    return tile;
+  }
 }
 
 class GameTileState extends State<GameTile> { // made the GameTileState class public

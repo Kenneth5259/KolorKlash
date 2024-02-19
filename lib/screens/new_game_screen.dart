@@ -78,7 +78,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
               DropdownButton<T>(
                 value: selectedValue,
                 onChanged: onChanged,
-                dropdownColor: Color.fromRGBO(0, 0, 0, 0.75),
+                dropdownColor: const Color.fromRGBO(0, 0, 0, 0.75),
                 items: options.entries
                     .map<DropdownMenuItem<T>>((MapEntry<T, dynamic> entry) {
                   return DropdownMenuItem<T>(
