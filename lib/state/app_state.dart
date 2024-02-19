@@ -17,8 +17,8 @@ class AppState {
   double gameTileWidth = 0;
   bool initialized = false;
   bool isGameOver = false;
-  bool showRestartMenu = false;
-  bool showSettingsMenu = false;
+  String? activePopupMenu;
+
   late List<List<TileContainerReduxState>> grid;
 
   Widget? activeScreen;
@@ -98,8 +98,7 @@ class AppState {
     loadedState.gameTileHeight = values["gameTileHeight"];
     loadedState.initialized = true;
     loadedState.isGameOver = false;
-    loadedState.showSettingsMenu = false;
-    loadedState.showRestartMenu = false;
+    loadedState.activePopupMenu = null;
 
     loadedState.deck = getDeckFromJson(values['deck']);
     loadedState.grid = getGridFromJson(values['grid']);

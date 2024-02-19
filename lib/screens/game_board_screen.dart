@@ -3,10 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/popups/settings_menu_popup.dart';
+import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
 import 'package:redux/redux.dart';
 
 import '../popups/game_menu_popup.dart';
-import '../state/actions/update_show_restart_menu_action.dart';
 import '../state/app_state.dart';
 import '../state/subclasses/tile_container_state.dart';
 import '../widgets/tile_deck.dart';
@@ -54,10 +54,10 @@ class _GameBoardState extends State<GameBoard> {
         ),
       ),
     ];
-    if(state.showRestartMenu) {
+    if(state.activePopupMenu == GameMenu.POPUP_ID) {
       gameBoardChildren.add(getGameMenu(state));
     }
-    if(state.showSettingsMenu) {
+    if(state.activePopupMenu == SettingsMenu.POPUP_ID) {
       gameBoardChildren.add(const SettingsMenu());
     }
     return gameBoardChildren;
@@ -70,14 +70,14 @@ class _GameBoardState extends State<GameBoard> {
           color: Colors.white,
           fontSize: fontSize
       ),
-      "Turn Count: ${turnCount}"
+      "Turn Count: $turnCount"
   )));
 
   Widget buildSettingsButton(Store<AppState> store) => Expanded(
     child: Center(
       child: IconButton(
           splashRadius: 16,
-          onPressed: () => {store.dispatch(UpdateShowRestartMenuAction(true))},
+          onPressed: () => {store.dispatch(UpdateActivePopupAction(GameMenu.POPUP_ID))},
           icon: const Icon(Icons.settings, color: Colors.white,)
       ),
     ),
