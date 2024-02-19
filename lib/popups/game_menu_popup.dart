@@ -3,6 +3,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/popups/popup_container.dart';
 import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:kolor_klash/screens/main_menu_screen.dart';
+import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
 import 'package:kolor_klash/state/app_state.dart';
@@ -27,6 +28,10 @@ class GameMenu extends StatelessWidget {
   void settingsMenu(Store<AppState> store) {
     store.dispatch(UpdateActivePopupAction(SettingsMenu.POPUP_ID));
   }
+  
+  void newGameScreen(Store<AppState> store) {
+    store.dispatch(SetActiveScreenAction(const NewGameScreen()));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +40,11 @@ class GameMenu extends StatelessWidget {
         menuTitle: 'Game Menu',
         menuItems: [
           // Takes the user to the new game screen - difficulty selection etc
-          MenuButton(buttonText: 'Play', onPressed: (){}),
+          MenuButton(buttonText: 'Play New Game', onPressed: () => newGameScreen(store)),
           // Restarts the game with the users current game settings
           MenuButton(buttonText: 'Restart', onPressed: () => restartGame(store)),
           // Closes the current popup and opens a game options popup for volume, haptics etc
-          MenuButton(buttonText: 'Options', onPressed: () => settingsMenu(store)),
+          MenuButton(buttonText: 'Settings', onPressed: () => settingsMenu(store)),
           // Closes the menu and returns the user to the opening screen of the app
           MenuButton(buttonText: 'Quit', onPressed: () => returnToMainMenu(store)),
         ]
