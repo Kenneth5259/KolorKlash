@@ -6,8 +6,7 @@ import 'package:kolor_klash/state/actions/set_game_tile_size_action.dart';
 import 'package:kolor_klash/state/actions/set_gridsize_action.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
-import 'package:kolor_klash/state/actions/update_show_restart_menu_action.dart';
-import 'package:kolor_klash/state/actions/update_show_settings_menu_action.dart';
+import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
 import 'package:kolor_klash/state/reducers/active_screen_reducer.dart';
 import 'package:kolor_klash/state/reducers/grid_size_reducer.dart';
 import 'package:kolor_klash/state/reducers/load_existing_game_reducer.dart';
@@ -15,8 +14,7 @@ import 'package:kolor_klash/state/reducers/mark_initialized_reducer.dart';
 import 'package:kolor_klash/state/reducers/set_game_tile_size_reducer.dart';
 import 'package:kolor_klash/state/reducers/start_new_game_reducer.dart';
 import 'package:kolor_klash/state/reducers/update_colors_reducer.dart';
-import 'package:kolor_klash/state/reducers/update_show_restart_menu_reducer.dart';
-import 'package:kolor_klash/state/reducers/update_show_settings__menu_reducer.dart';
+import 'package:kolor_klash/state/reducers/update_active_popup_reducer.dart';
 
 import 'app_state.dart';
 
@@ -36,8 +34,8 @@ AppState stateFromReducer(AppState previousState, dynamic action) {
   if(action is UpdateColorsAction) {
     return updateColorsReducer(previousState, action);
   }
-  if(action is UpdateShowRestartMenuAction) {
-    return updateShowRestartMenuActionReducer(previousState, action);
+  if(action is UpdateActivePopupAction) {
+    return updateActivePopupReducer(previousState, action);
   }
   if(action is StartNewGameAction) {
     return startNewGameReducer(previousState, action);
@@ -47,9 +45,6 @@ AppState stateFromReducer(AppState previousState, dynamic action) {
   }
   if(action is SetActiveScreenAction) {
     return activeScreenReducer(previousState, action);
-  }
-  if(action is UpdateShowSettingsMenuAction) {
-    return updateShowSettingsMenuReducer(previousState, action);
   }
   if(action is LoadExistingGameAction) {
     return loadExistingGameReducer(action.loadedState);

@@ -4,7 +4,7 @@ import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:kolor_klash/services/local_file_service.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
-import 'package:kolor_klash/state/actions/update_show_settings_menu_action.dart';
+import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
 
 import '../state/actions/load_existing_game_action.dart';
 import '../state/actions/mark_initialized_action.dart';
@@ -46,7 +46,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
     Widget value =  StoreConnector<AppState, AppState>(
         converter: (store) => store.state,
         builder: (BuildContext context, AppState state) =>
-          state.showSettingsMenu ? const SettingsMenu() : Container()
+          state.activePopupMenu == SettingsMenu.POPUP_ID ? const SettingsMenu() : Container()
     );
     return value is! Container ? value : null;
   }
@@ -114,7 +114,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
 
   void showSettingsMenu() {
     final store = StoreProvider.of<AppState>(context);
-    store.dispatch(UpdateShowSettingsMenuAction(true));
+    store.dispatch(UpdateActivePopupAction(SettingsMenu.POPUP_ID));
   }
 
   void markInitialized() {
