@@ -4,7 +4,8 @@ String difficultyToString(Difficulty diff) {
   return diff.toString().split('.').last;
 }
 Difficulty stringToDifficulty(String string) {
-  return Difficulty.values.firstWhere((val) => val.toString().split('.').last == string);
+  return Difficulty.values.firstWhere(
+          (val) => val.toString() == string);
 }
 
 enum GameSize { three, four, five}

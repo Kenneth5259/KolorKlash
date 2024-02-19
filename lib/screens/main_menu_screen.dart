@@ -128,6 +128,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
 
     void initAnimations(Duration delay, AnimationController controller, Animation<Offset> offsetAnimation) async {
       await Future.delayed(delay);
+      // TODO: Inspect issue throwing error
       controller.forward();
       setState(() {
         ++animationCount;

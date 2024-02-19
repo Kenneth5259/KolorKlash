@@ -1,3 +1,4 @@
+import 'package:kolor_klash/services/local_file_service.dart';
 import 'package:kolor_klash/state/actions/load_existing_game_action.dart';
 import 'package:kolor_klash/state/actions/mark_initialized_action.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
@@ -20,6 +21,12 @@ import 'package:kolor_klash/state/reducers/update_show_settings__menu_reducer.da
 import 'app_state.dart';
 
 AppState appReducer(AppState previousState, dynamic action) {
+  AppState state = stateFromReducer(previousState, action);
+  LocalFileService.writeAppState(state);
+  return state;
+}
+
+AppState stateFromReducer(AppState previousState, dynamic action) {
   if(action is MarkInitializedAction) {
     return markInitializedReducer(previousState);
   }

@@ -17,11 +17,28 @@ class TileContainerReduxState {
   }
 
   String encodeColorMap() {
-    Map<String, String> stringMap = {};
+    Map<String, int> stringMap = {};
     for (var element in colorMap.entries) {
-      stringMap[element.key.toString()] = element.value.toString();
+      stringMap[element.key.toString()] = element.value.value;
     }
     return jsonEncode(stringMap);
   }
 
+  static TileContainerReduxState loadFromJson(Map values) {
+    TileContainer loadedContainer = TileContainer.containerFromJson(values['container']);
+    Map<int, Color> loadedColorMap = {};
+    Map decodedMap = jsonDecode(values['colorMap']);
+
+    if(decodedMap.isNotEmpty) {
+      for(var entry in decodedMap.entries) {
+        loadedColorMap[int.parse(entry.key)] = Color(entry.value);
+      }
+    }
+
+    TileContainerReduxState loadedReduxState = TileContainerReduxState(container: loadedContainer);
+    loadedReduxState.colorMap = loadedColorMap;
+
+    return loadedReduxState;
+  }
 }
+

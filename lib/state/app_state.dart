@@ -91,19 +91,47 @@ class AppState {
   static AppState loadFromJson(String json) {
     Map values = jsonDecode(json);
     AppState loadedState = AppState(gridSize: values["gridSize"]);
-    loadedState.difficulty = stringToDifficulty(values["difficulty"]);
-    loadedState.turnCount = int.parse(values["turnCount"]);
-    loadedState.score = int.parse(values["score"]);
-    loadedState.gameTileWidth = double.parse(values["gameTileWidth"]);
-    loadedState.gameTileHeight = double.parse(values["gameTileHeight"]);
+    loadedState.difficulty = stringToDifficulty(values['difficulty']);
+    loadedState.turnCount = values["turnCount"];
+    loadedState.score = values["score"];
+    loadedState.gameTileWidth = values["gameTileWidth"];
+    loadedState.gameTileHeight = values["gameTileHeight"];
     loadedState.initialized = true;
     loadedState.isGameOver = false;
     loadedState.showSettingsMenu = false;
     loadedState.showRestartMenu = false;
 
-    // TODO: Load Deck from File
+    loadedState.deck = getDeckFromJson(values['deck']);
+    loadedState.grid = getGridFromJson(values['grid']);
 
-    // TODO: Load Grid from File
     return loadedState;
+  }
+
+  static List<GameTile?> getDeckFromJson(Iterable items) {
+    List<GameTile?> loadedDeck = [];
+
+    for (var item in items) {
+      if(item == null || item == "null") {
+        loadedDeck.add(null);
+        continue;
+      }
+      GameTile tile = GameTile.loadFromJsonMap(item);
+      loadedDeck.add(tile);
+    }
+
+    return loadedDeck;
+  }
+
+  static List<List<TileContainerReduxState>> getGridFromJson(Iterable grid) {
+    List<List<TileContainerReduxState>> loadedGrid = [];
+    for(Iterable row in grid) {
+      List<TileContainerReduxState> loadedRow = [];
+      for(var item in row) {
+        TileContainerReduxState loadedCell = TileContainerReduxState.loadFromJson(item);
+        loadedRow.add(loadedCell);
+      }
+      loadedGrid.add(loadedRow);
+    }
+    return loadedGrid;
   }
 }

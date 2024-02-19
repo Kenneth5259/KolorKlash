@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
@@ -15,7 +14,8 @@ class LocalFileService {
 
   static Future<File> get _localAppState async {
     final path = await _localPath;
-    return File('$path/appState.txt');
+    // log to repeat file writes on simulator if necessary
+    return File('$path/appState.json');
   }
 
   static Future<File> writeAppState(AppState appState) async {
@@ -23,10 +23,9 @@ class LocalFileService {
 
     // log file contents
     String appStateString = json.encode(appState.toJson());
-    log(appStateString);
 
     // Write the file
-    return file.writeAsString(appStateString);
+    return file.writeAsString(appStateString, mode: FileMode.writeOnly);
   }
 
   static Future<AppState?> readAppState() async {
@@ -36,7 +35,9 @@ class LocalFileService {
       // Read the file
       final contents = await file.readAsString();
 
-      return json.decode(contents) as AppState;
+
+
+      return AppState.loadFromJson(contents);
     } catch (e) {
       // If encountering an error, return 0
       return null;

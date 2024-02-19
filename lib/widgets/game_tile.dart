@@ -38,8 +38,13 @@ class GameTile extends StatefulWidget {
       'max': max,
       'index': index,
       'colorIndex': colorIndex,
-      'color': color.toString()
+      'color': color?.value
     };
+  }
+  static GameTile loadFromJsonMap(Map item) {
+    Color color = Color(item['color']);
+    GameTile tile = GameTile(max: item['max'], index: item['index'], colorIndex: item['colorIndex'], color: color);
+    return tile;
   }
 }
 

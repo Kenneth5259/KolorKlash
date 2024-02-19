@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
@@ -22,6 +21,10 @@ class TileContainer extends StatefulWidget {
       'row': row,
       'column': column
     };
+  }
+
+  static TileContainer containerFromJson(Map values) {
+    return TileContainer(size: values['size'], row: values['row'], column: values['column']);
   }
 }
 
