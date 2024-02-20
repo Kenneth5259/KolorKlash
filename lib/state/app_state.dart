@@ -15,6 +15,7 @@ class AppState {
   int score = 0;
   double gameTileHeight = 0;
   double gameTileWidth = 0;
+  double volume = 0.5;
   bool initialized = false;
   bool isGameOver = false;
   String? activePopupMenu;
@@ -57,6 +58,7 @@ class AppState {
       'score': score,
       'gameTileHeight': gameTileHeight,
       'gameTileWidth': gameTileWidth,
+      'volume': volume,
       'initialized': true,
       'isGameOver': false,
       'showRestartMenu': false,
@@ -96,6 +98,7 @@ class AppState {
     loadedState.score = values["score"];
     loadedState.gameTileWidth = values["gameTileWidth"];
     loadedState.gameTileHeight = values["gameTileHeight"];
+    loadedState.volume = values['volume'] ?? 0.5;
     loadedState.initialized = true;
     loadedState.isGameOver = false;
     loadedState.activePopupMenu = null;

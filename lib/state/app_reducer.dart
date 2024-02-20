@@ -7,6 +7,7 @@ import 'package:kolor_klash/state/actions/set_gridsize_action.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
 import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
+import 'package:kolor_klash/state/actions/update_volume_action.dart';
 import 'package:kolor_klash/state/reducers/active_screen_reducer.dart';
 import 'package:kolor_klash/state/reducers/grid_size_reducer.dart';
 import 'package:kolor_klash/state/reducers/load_existing_game_reducer.dart';
@@ -15,6 +16,7 @@ import 'package:kolor_klash/state/reducers/set_game_tile_size_reducer.dart';
 import 'package:kolor_klash/state/reducers/start_new_game_reducer.dart';
 import 'package:kolor_klash/state/reducers/update_colors_reducer.dart';
 import 'package:kolor_klash/state/reducers/update_active_popup_reducer.dart';
+import 'package:kolor_klash/state/reducers/update_volume_reducer.dart';
 
 import 'app_state.dart';
 
@@ -48,6 +50,9 @@ AppState stateFromReducer(AppState previousState, dynamic action) {
   }
   if(action is LoadExistingGameAction) {
     return loadExistingGameReducer(action.loadedState);
+  }
+  if(action is UpdateVolumeAction) {
+    return updateVolumeReducer(previousState, action);
   }
   return previousState;
 }

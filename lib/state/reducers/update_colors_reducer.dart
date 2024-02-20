@@ -1,6 +1,6 @@
-import 'dart:developer';
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:kolor_klash/popups/game_menu_popup.dart';
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
 import 'package:kolor_klash/state/subclasses/emptied_deck.dart';
@@ -12,7 +12,12 @@ import 'package:kolor_klash/widgets/tile_container.dart';
 import '../../widgets/game_tile.dart';
 import '../app_state.dart';
 
+AudioPlayer effectPlayer = AudioPlayer();
+
 AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) {
+
+  effectPlayer.setVolume(previousState.volume);
+
   // get the grid
   List<List<TileContainerReduxState>> grid = previousState.grid;
   // get the color and its column position
@@ -59,8 +64,11 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   updatedAppState.isGameOver = GameStateRules.isGameOver(grid, newDeck);
   updatedAppState.activePopupMenu = updatedAppState.isGameOver ? GameMenu.POPUP_ID : null;
   updatedAppState.activeScreen = previousState.activeScreen;
+  updatedAppState.volume = previousState.volume;
   if(updatedAppState.isGameOver) {
-    log(updatedAppState.isGameOver.toString());
+    effectPlayer.play(AssetSource('music/effect/cartoon-slide-whistle-down-2-176648.mp3'));
+  } else if(flushables.isEmpty){
+    effectPlayer.play(AssetSource('music/effect/pop-39222.mp3'));
   }
   return updatedAppState;
 }
@@ -83,6 +91,7 @@ FlushedMap flushColor(Map<int, Color> colorMap, Color color) {
   int colorCount = colorMap.length;
   colorMap.removeWhere((key, value) => value.value == color.value);
   colorCount -= colorMap.length;
+  effectPlayer.play(AssetSource('music/effect/sound-effect-twinklesparkle-115095.mp3'));
   return FlushedMap(colorMap: colorMap, colorCount: colorCount);
 }
 
@@ -93,5 +102,6 @@ List<GameTile?> generateNewDeck(int gridSize) {
   for(var i  = 0; i < gridSize; i++) {
     deck.add(GameTile(max: gridSize, index: i, colorIndex: GameTile.generateColumnIndex(0, gridSize), color: GameTile.generateColor()));
   }
+  effectPlayer.play(AssetSource('music/effect/clean-fast-swooshaiff-14784.mp3'));
   return deck;
 }
