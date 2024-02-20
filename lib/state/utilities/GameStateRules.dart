@@ -44,7 +44,7 @@ class GameStateRules {
     TileContainerReduxState matchableTile = grid[tile.row][tile.column];
     for(var i = 0; i < grid.length; i++) {
       var column = matchableTile.colorMap[i];
-      if(column == null || column != color) {
+      if(column == null || column.value != color.value) {
         return [];
       }
     }
