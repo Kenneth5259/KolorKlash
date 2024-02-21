@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/Extensions/string_extensions.dart';
+import 'package:kolor_klash/screens/main_menu_screen.dart';
+import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/widgets/menu_button.dart';
 import 'package:kolor_klash/widgets/white_menu_text.dart';
@@ -62,6 +64,11 @@ class _NewGameScreenState extends State<NewGameScreen> {
   void dispatchNewGameAction() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(StartNewGameAction(gridSizeMap[gridSizeMap.keys.first]!, selectedDifficulty));
+  }
+
+  void dispatchMainMenuAction() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(SetActiveScreenAction(const MainMenuScreen()));
   }
 
   Widget buildLabeledDropdown<T>(String title, Map<T, dynamic> options, void Function(T?)? onChanged, T selectedValue) {
@@ -132,7 +139,14 @@ class _NewGameScreenState extends State<NewGameScreen> {
                 ],
               ),
             ),
-            MenuButton(buttonText: 'Start New Game', onPressed: () => dispatchNewGameAction())
+            Column(
+              children: [
+                MenuButton(buttonText: 'Start New Game', onPressed: () => dispatchNewGameAction()),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+                MenuButton(buttonText: 'Main Menu', onPressed: () => dispatchMainMenuAction()),
+              ],
+            )
+
           ],
         ),
       ),

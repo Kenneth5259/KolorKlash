@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/popups/game_over_popup.dart';
 import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
 import 'package:redux/redux.dart';
@@ -59,6 +60,9 @@ class _GameBoardState extends State<GameBoard> {
     }
     if(state.activePopupMenu == SettingsMenu.POPUP_ID) {
       gameBoardChildren.add(const SettingsMenu());
+    }
+    if(state.activePopupMenu == GameOverMenu.POPUP_ID) {
+      gameBoardChildren.add(const GameOverMenu());
     }
     return gameBoardChildren;
   }

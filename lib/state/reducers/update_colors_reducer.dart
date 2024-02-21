@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
-import 'package:kolor_klash/popups/game_menu_popup.dart';
+import 'package:kolor_klash/popups/game_over_popup.dart';
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
 import 'package:kolor_klash/state/subclasses/emptied_deck.dart';
 import 'package:kolor_klash/state/subclasses/flushed_map.dart';
@@ -62,7 +62,7 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   updatedAppState.score = score;
   updatedAppState.turnCount = turnCount;
   updatedAppState.isGameOver = GameStateRules.isGameOver(grid, newDeck);
-  updatedAppState.activePopupMenu = updatedAppState.isGameOver ? GameMenu.POPUP_ID : null;
+  updatedAppState.activePopupMenu = updatedAppState.isGameOver ? GameOverMenu.POPUP_ID : null;
   updatedAppState.activeScreen = previousState.activeScreen;
   updatedAppState.volume = previousState.volume;
   if(updatedAppState.isGameOver) {
