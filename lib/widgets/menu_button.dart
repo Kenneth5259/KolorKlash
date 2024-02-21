@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kolor_klash/styles/background_gradient.dart';
 import 'package:kolor_klash/widgets/white_menu_text.dart';
 
 class MenuButton extends StatelessWidget {
@@ -10,10 +11,15 @@ class MenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      color: Colors.white54,
+      color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [WhiteStyledText(text: buttonText)],
+        children: [
+          ShaderMask(
+              shaderCallback: (bounds) => backgroundGradient.createShader(bounds),
+              child: WhiteStyledText(text: buttonText)
+          )
+        ],
       ),
       onPressed: () => onPressed(),
     );
