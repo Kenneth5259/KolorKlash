@@ -19,9 +19,11 @@ class _PopupContainerState extends State<PopupContainer> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      setState(() {
-        _opacity = 1.0;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(Duration.zero, () {
+        setState(() {
+          _opacity = 1.0;
+        });
       });
     });
   }
@@ -104,7 +106,11 @@ class _PopupContainerState extends State<PopupContainer> {
                 child: IconButton(
                     iconSize: 16,
                     splashRadius: 20,
-                    onPressed: () => closeMenu(), icon: const Icon(Icons.close)
+                    onPressed: () => closeMenu(),
+                    icon: ShaderMask(
+                      shaderCallback: (bounds) => backgroundGradient.createShader(bounds),
+                      child: const Icon(Icons.close, color: Colors.white)
+                    )
                 ),
               )
           )

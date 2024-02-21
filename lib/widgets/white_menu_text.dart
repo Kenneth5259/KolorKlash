@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class WhiteStyledText extends StatelessWidget {
   final String text;
-  const WhiteStyledText({super.key, required this.text});
+  final double? fontsize;
+  const WhiteStyledText({super.key, required this.text, this.fontsize});
 
   @override
   Widget build(BuildContext context) {
@@ -10,11 +11,12 @@ class WhiteStyledText extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white,
-          fontSize: 16,
+          fontSize: fontsize ?? 16,
+          fontWeight: FontWeight.w600
         ),
       ),
-    );;
+    );
   }
 }
