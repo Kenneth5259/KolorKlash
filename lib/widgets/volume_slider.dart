@@ -14,7 +14,7 @@ class VolumeSlider extends StatefulWidget {
 }
 
 class _VolumeSliderState extends State<VolumeSlider> {
-  double volume = 0.5;
+  double? volume;
   @override
   Widget build(BuildContext context) {
     final store = StoreProvider.of<AppState>(context);
@@ -24,7 +24,7 @@ class _VolumeSliderState extends State<VolumeSlider> {
       children: [
         const WhiteStyledText(text: 'Volume'),
         Slider(
-          value: volume,
+          value: volume ?? store.state.volume,
           min: 0,
           max: 1,
           divisions: 100,
