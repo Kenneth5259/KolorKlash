@@ -1,6 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/services/local_file_service.dart';
 
 import 'package:kolor_klash/state/app_reducer.dart';
 import 'package:kolor_klash/state/app_state.dart';
@@ -12,7 +13,10 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  final store = Store<AppState>(appReducer, initialState: AppState(gridSize: 3), syncStream: true);
+  AppState initialState = await LocalFileService.readAppState() ?? AppState(gridSize: 3);
+  initialState.initialized = false;
+
+  final store = Store<AppState>(appReducer, initialState: initialState, syncStream: true);
 
 
   final backgroundPlayer = AudioPlayer();
