@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 
 class FlexColumn extends StatefulWidget {
   static const radius = Radius.circular(5);
@@ -36,16 +37,7 @@ class _FlexColumnState extends State<FlexColumn> {
     return BoxDecoration(
       borderRadius: BorderRadius.all(FlexColumn.radius),
       border: Border.all(color: FlexColumn.borderColor),
-      gradient: LinearGradient(
-        begin: Alignment.bottomCenter,
-        end: Alignment.topCenter,
-        colors: [
-          Colors.white,
-          color,
-          color == Colors.white ? Colors.white : Colors.black,
-        ],
-        stops: const [-0.5, 0.9, 1.4],
-      ),
+      gradient: !Platform.isAndroid ? defaultColorGradient(color) : androidColumnGradient(color),
     );
   }
 
@@ -55,7 +47,7 @@ class _FlexColumnState extends State<FlexColumn> {
       flex: 1,
       child: widget.isAnimated
           ? AnimatedContainer(
-        duration: Duration(milliseconds: 330),
+        duration: const Duration(milliseconds: 330),
         curve: Curves.easeIn,
         decoration: _buildBoxDecoration(_color),
       )
@@ -64,4 +56,29 @@ class _FlexColumnState extends State<FlexColumn> {
       ),
     );
   }
+}
+
+LinearGradient androidColumnGradient(Color color) {
+  return LinearGradient(
+      begin: Alignment.bottomCenter,
+      end: Alignment.topCenter,
+      colors: [
+        Colors.white,
+        color
+      ],
+      stops: const [0, 1]
+  );
+}
+
+LinearGradient defaultColorGradient(Color color) {
+  return LinearGradient(
+      begin: Alignment.bottomCenter,
+      end: Alignment.topCenter,
+      colors: [
+        Colors.white,
+        color,
+        color == Colors.white ? Colors.white : Colors.black,
+      ],
+      stops: const [-0.5, 0.9, 1.4]
+  );
 }
