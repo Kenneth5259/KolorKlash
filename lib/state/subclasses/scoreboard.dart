@@ -4,9 +4,6 @@ class ScoreBoard {
   List<ScoreEntry> _scores = [];
 
   List<ScoreEntry> getScores() {
-    _scores.sort((a,b) =>
-      a.scoreValue > b.scoreValue ? 1 : 0
-    );
     return _scores;
   }
 
@@ -17,7 +14,7 @@ class ScoreBoard {
   void addScore(ScoreEntry score) {
     _scores.add(score);
   }
-  
+
   String toJson() {
     List<String> scoreStrings = [];
     for(ScoreEntry score in _scores) {
@@ -27,7 +24,7 @@ class ScoreBoard {
       'scores': scoreStrings
     });
   }
-  
+
   static ScoreBoard fromJson(Map jsonMap) {
     ScoreBoard updatedScoreBoard = ScoreBoard();
     List<String> scoreStrings = jsonMap['scores'];

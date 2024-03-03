@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/popups/settings_menu_popup.dart';
 import 'package:kolor_klash/screens/new_game_screen.dart';
+import 'package:kolor_klash/screens/score_board_screen.dart';
 import 'package:kolor_klash/services/local_file_service.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
 import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
@@ -72,8 +73,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
                 children: <Widget>[
                   buildButton('Play New Game', offsetAnimation1, () => newGameScreen()),
                   buildButton('Continue Game', offsetAnimation2, () => loadExistingGame()),
-                  // TODO: Add Score Board Screen & Score History Locally
-                  buildButton('Score Board', offsetAnimation3, (){}),
+                  buildButton('Score Board', offsetAnimation3, () => scoreBoardScreen()),
                 ],
               ),
             ),
@@ -115,6 +115,11 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
   void showSettingsMenu() {
     final store = StoreProvider.of<AppState>(context);
     store.dispatch(UpdateActivePopupAction(SettingsMenu.POPUP_ID));
+  }
+
+  void scoreBoardScreen() {
+    final store = StoreProvider.of<AppState>(context);
+    store.dispatch(SetActiveScreenAction(const ScoreBoardScreen(scores: [])));
   }
 
   void markInitialized() {

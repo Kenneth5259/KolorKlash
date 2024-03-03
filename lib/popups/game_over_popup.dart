@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:kolor_klash/popups/popup_container.dart';
+import 'package:kolor_klash/screens/score_board_screen.dart';
 import 'package:kolor_klash/widgets/menu_button.dart';
 import 'package:kolor_klash/state/app_state.dart';
 import 'package:redux/redux.dart';
@@ -53,9 +54,7 @@ class _GameOverMenuState extends State<GameOverMenu> {
             buttonText: 'Main Menu',
           ),
           MenuButton(
-            onPressed: () {
-              // TODO: Score Board Button Logic
-            },
+            onPressed: () => scoreBoardScreen(store),
             buttonText: 'Score Board',
           ),
         ],
@@ -65,6 +64,10 @@ class _GameOverMenuState extends State<GameOverMenu> {
 
   void newGameScreen(Store<AppState> store) {
     store.dispatch(SetActiveScreenAction(const NewGameScreen()));
+  }
+  
+  void scoreBoardScreen(Store<AppState> store) {
+    store.dispatch(SetActiveScreenAction(const ScoreBoardScreen(scores: [])));
   }
 
   void returnToMainMenu(Store<AppState> store) {
