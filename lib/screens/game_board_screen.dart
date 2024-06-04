@@ -17,10 +17,12 @@ class GameBoard extends StatefulWidget {
   @override
   State<GameBoard> createState() => _GameBoardState();
 }
+
 class _GameBoardState extends State<GameBoard> {
-  static const double paddingSide = 8;
-  static const double paddingTop = 32;
+  static const double defaultPaddingSide = 8;
+  static const double defaultPaddingTop = 32;
   static const double fontSize = 16;
+  static const double defaultGap = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +30,32 @@ class _GameBoardState extends State<GameBoard> {
       converter: (store) => store.state,
       builder: (_, state)
       {
-        return Stack(
-            children: getGameBoardChildren(state)
+        return LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double currentWidth = constraints.maxWidth;
+              double paddingSide;
+
+              // Check the width of the device and adjust padding accordingly
+              if(currentWidth > 600){ // Width greater than 600 is most likely a tablet screen
+                paddingSide = currentWidth * 0.1; // Padding is 10% of width
+              } else {
+                paddingSide = defaultPaddingSide;
+              }
+
+              return Stack(
+                  children: getGameBoardChildren(state, paddingSide)
+              );
+            }
         );
       },
     );
   }
 
-  List<Widget> getGameBoardChildren(AppState state) {
+  List<Widget> getGameBoardChildren(AppState state, double paddingSide) {
     final store = StoreProvider.of<AppState>(context);
     List<Widget> gameBoardChildren = [
       Padding(
-        padding: const EdgeInsets.fromLTRB(paddingSide, paddingTop, paddingSide, paddingSide),
+        padding: EdgeInsets.fromLTRB(paddingSide, defaultPaddingTop, paddingSide, defaultPaddingSide),
         child: Column(
           children: [
             Row(
@@ -55,6 +71,7 @@ class _GameBoardState extends State<GameBoard> {
         ),
       ),
     ];
+
     if(state.activePopupMenu == GameMenu.POPUP_ID) {
       gameBoardChildren.add(getGameMenu(state));
     }
@@ -95,25 +112,30 @@ class _GameBoardState extends State<GameBoard> {
       "Score: ${score}"
   )));
 
-  List<Expanded> generateTileRows(List<List<TileContainerReduxState>> tiles) {
-    List<Expanded> rows = [];
+  List<Widget> generateTileRows(List<List<TileContainerReduxState>> tiles) {
+    List<Widget> rows = [];
     for(var row in tiles) {
-      rows.add(
-          Expanded(
-              flex: 1,
-              child: Row(
-                children: generateTileCells(row),
-              )
-          )
-      );
+      rows.add(Expanded(
+        flex: 1,
+        child: Row(children: generateTileCells(row)),
+      ));
+      rows.add(const SizedBox(height: defaultGap)); // Specify the gap between the rows.
     }
     return rows;
   }
 
-  List<Expanded> generateTileCells(List<TileContainerReduxState> row) {
-    List<Expanded> cells = [];
+  List<Widget> generateTileCells(List<TileContainerReduxState> row) {
+    List<Widget> cells = [];
     for(var cell in row) {
-      cells.add(Expanded(flex: 1, child: cell.container));
+      cells.add(
+        Expanded(
+          flex: 1,
+          child: Container(
+            margin: const EdgeInsets.all(defaultGap / 2), // Specify the gap between the cells.
+            child: cell.container,
+          ),
+        ),
+      );
     }
     return cells;
   }
