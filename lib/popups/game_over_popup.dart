@@ -65,7 +65,7 @@ class _GameOverMenuState extends State<GameOverMenu> {
   void newGameScreen(Store<AppState> store) {
     store.dispatch(SetActiveScreenAction(const NewGameScreen()));
   }
-  
+
   void scoreBoardScreen(Store<AppState> store) {
     store.dispatch(SetActiveScreenAction(const ScoreBoardScreen(scores: [])));
   }

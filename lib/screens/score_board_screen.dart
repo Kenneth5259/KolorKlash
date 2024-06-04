@@ -37,26 +37,32 @@ class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return SingleChildScrollView(
-      child: DataTable(
-        sortColumnIndex: 0,
-        sortAscending: _ascending,
-        columns: [
-          DataColumn(label: const Text('Score Date'),
-              onSort: (int columnIndex, bool ascending) => _sort<DateTime>((ScoreEntry d) => d.scoreDate, (a, b) => a.compareTo(b), ascending)),
-          DataColumn(label: const Text('Score Value'),
-              onSort: (int columnIndex, bool ascending) => _sort<int>((ScoreEntry s) => s.scoreValue, (a, b) => a.compareTo(b), ascending)),
-          DataColumn(label: const Text('Turn Count'),
-              onSort: (int columnIndex, bool ascending) => _sort<int>((ScoreEntry t) => t.turnCount, (a, b) => a.compareTo(b), ascending)),
-        ],
-        rows: _scores.map((ScoreEntry scoreEntry) {
-          return DataRow(cells: [
-            DataCell(Text('${scoreEntry.scoreDate}')),
-            DataCell(Text('${scoreEntry.scoreValue}')),
-            DataCell(Text('${scoreEntry.turnCount}')),
-          ]);
-        }).toList(),
-      ),
+    return Row(
+      children: [
+        Column(
+          children: [
+            DataTable(
+              sortColumnIndex: 0,
+              sortAscending: _ascending,
+              columns: [
+                DataColumn(label: const Text('Date'),
+                    onSort: (int columnIndex, bool ascending) => _sort<DateTime>((ScoreEntry d) => d.scoreDate, (a, b) => a.compareTo(b), ascending)),
+                DataColumn(label: const Text('Score'),
+                    onSort: (int columnIndex, bool ascending) => _sort<int>((ScoreEntry s) => s.scoreValue, (a, b) => a.compareTo(b), ascending)),
+                DataColumn(label: const Text('Turns'),
+                    onSort: (int columnIndex, bool ascending) => _sort<int>((ScoreEntry t) => t.turnCount, (a, b) => a.compareTo(b), ascending)),
+              ],
+              rows: _scores.map((ScoreEntry scoreEntry) {
+                return DataRow(cells: [
+                  DataCell(Text('${scoreEntry.scoreDate}')),
+                  DataCell(Text('${scoreEntry.scoreValue}')),
+                  DataCell(Text('${scoreEntry.turnCount}')),
+                ]);
+              }).toList(),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
