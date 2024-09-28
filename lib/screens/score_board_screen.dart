@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import '../services/local_file_service.dart';
+import '../state/actions/load_existing_game_action.dart';
+import '../state/actions/set_active_screen_action.dart';
+import '../state/app_state.dart';
 import '../state/subclasses/scoreboard.dart';
+import '../widgets/menu_button.dart';
+import 'main_menu_screen.dart';
 
 class ScoreBoardScreen extends StatefulWidget {
   final List<ScoreEntry> scores;
@@ -7,15 +15,15 @@ class ScoreBoardScreen extends StatefulWidget {
   const ScoreBoardScreen({Key? key, required this.scores}) : super(key: key);
 
   @override
-  ScoreBoardScreenState createState() => ScoreBoardScreenState();
+  _ScoreBoardScreenState createState() => _ScoreBoardScreenState();
 }
 
-class ScoreBoardScreenState extends State<ScoreBoardScreen> {
+class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
   List<ScoreEntry> _scores;
   bool _ascending = true;
   int _sortColumnIndex = 0;
 
-  ScoreBoardScreenState() : _scores = [];
+  _ScoreBoardScreenState() : _scores = [];
 
   @override
   void initState() {
@@ -27,9 +35,7 @@ class ScoreBoardScreenState extends State<ScoreBoardScreen> {
     _scores = List.from(_scores)..sort((ScoreEntry a, ScoreEntry b) {
       final aValue = getField(a);
       final bValue = getField(b);
-      return ascending
-          ? Comparable.compare(aValue as Comparable, bValue as Comparable)
-          : Comparable.compare(bValue as Comparable, aValue as Comparable);
+      return ascending ? Comparable.compare(aValue as Comparable, bValue as Comparable) : Comparable.compare(bValue as Comparable, aValue as Comparable);
     });
     setState(() {
       _sortColumnIndex = columnIndex;
@@ -39,44 +45,105 @@ class ScoreBoardScreenState extends State<ScoreBoardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Column(
+    final store = StoreProvider.of<AppState>(context);
+    return StoreConnector<AppState, AppState>(
+        converter: (store) => store.state,
+        builder: (context, state) => SafeArea(
+        child: Column(
           children: [
-            IconTheme(
-              data: const IconThemeData(color: Colors.white),
-              child: DataTable(
-                sortColumnIndex: _sortColumnIndex,
-                sortAscending: _ascending,
-                columns: [
-                  DataColumn(
-                    label: const Text('Date', style: TextStyle(color: Colors.white, fontSize: 20)),
-                    onSort: (columnIndex, ascending) =>
-                        _sort<DateTime>(columnIndex, (ScoreEntry d) => d.scoreDate, ascending),
-                  ),
-                  DataColumn(
-                    label: const Text('Score', style: TextStyle(color: Colors.white, fontSize: 20)),
-                    onSort: (columnIndex, ascending) =>
-                        _sort<int>(columnIndex, (ScoreEntry s) => s.scoreValue, ascending),
-                  ),
-                  DataColumn(
-                    label: const Text('Turns', style: TextStyle(color: Colors.white, fontSize: 20)),
-                    onSort: (columnIndex, ascending) =>
-                        _sort<int>(columnIndex, (ScoreEntry t) => t.turnCount, ascending),
-                  ),
-                ],
-                rows: _scores.map((ScoreEntry scoreEntry) {
-                  return DataRow(cells: [
-                    DataCell(Text('${scoreEntry.scoreDate}')),
-                    DataCell(Text('${scoreEntry.scoreValue}')),
-                    DataCell(Text('${scoreEntry.turnCount}')),
-                  ]);
-                }).toList(),
+            Row(
+              children: [
+                _buildHeaderCell("Date", 0),
+                _buildHeaderCell("Score", 1),
+                _buildHeaderCell("Turns", 2),
+              ],
+            ),
+            _divider(),
+            Expanded(
+              child: ListView.separated(
+                itemCount: _scores.length,
+                separatorBuilder: (BuildContext context, int index) => _divider(),
+                itemBuilder: (context, index){
+                  final ScoreEntry entry = _scores[index];
+                  return Row(
+                    children: [
+                      _buildBodyCell(entry.scoreDate.toString(), 0),
+                      _buildBodyCell(entry.scoreValue.toString(), 1),
+                      _buildBodyCell(entry.turnCount.toString(), 2),
+                    ],
+                  );
+                },
               ),
+            ),
+            MenuButton(
+              onPressed: () => loadExistingGame(store),
+              buttonText: 'Continue Game',
+            ),
+            MenuButton(
+              onPressed: () => returnToMainMenu(store),
+              buttonText: 'Main Menu',
             ),
           ],
         ),
-      ],
+      ),
     );
+  }
+
+  Widget _divider() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.075, vertical: 15.0),
+      child: const Divider(color: Colors.white),
+    );
+  }
+
+  Expanded _buildHeaderCell(String label, int index) {
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          switch (index) {
+            case 0:
+              _sort<DateTime>(index, (ScoreEntry d) => d.scoreDate, !_ascending);
+              break;
+            case 1:
+              _sort<int>(index, (ScoreEntry s) => s.scoreValue, !_ascending);
+              break;
+            case 2:
+              _sort<int>(index, (ScoreEntry t) => t.turnCount, !_ascending);
+              break;
+          }
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              label,
+              style: const TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            if (index == _sortColumnIndex)
+              Icon(
+                _ascending ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+                color: Colors.white,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Expanded _buildBodyCell(String label, int index) {
+    return Expanded(
+      child: Text(label, textAlign: TextAlign.center),
+    );
+  }
+
+  void returnToMainMenu(Store<AppState> store) {
+    store.dispatch(SetActiveScreenAction(const MainMenuScreen()));
+  }
+
+  void loadExistingGame(Store<AppState> store) async {
+
+    AppState? loadedState = await LocalFileService.readAppState();
+
+    store.dispatch(LoadExistingGameAction(loadedState: loadedState ?? store.state));
   }
 }
