@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:kolor_klash/screens/new_game_screen.dart';
 import 'package:redux/redux.dart';
 import '../services/local_file_service.dart';
 import '../state/actions/load_existing_game_action.dart';
@@ -10,9 +11,8 @@ import '../widgets/menu_button.dart';
 import 'main_menu_screen.dart';
 
 class ScoreBoardScreen extends StatefulWidget {
-  final List<ScoreEntry> scores;
 
-  const ScoreBoardScreen({Key? key, required this.scores}) : super(key: key);
+  const ScoreBoardScreen({Key? key}) : super(key: key);
 
   @override
   _ScoreBoardScreenState createState() => _ScoreBoardScreenState();
@@ -28,7 +28,6 @@ class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
   @override
   void initState() {
     super.initState();
-    _scores.addAll(widget.scores);
   }
 
   void _sort<T>(int columnIndex, T Function(ScoreEntry s) getField, bool ascending) {
@@ -47,7 +46,10 @@ class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
   Widget build(BuildContext context) {
     final store = StoreProvider.of<AppState>(context);
     return StoreConnector<AppState, AppState>(
-        converter: (store) => store.state,
+        converter: (store) {
+            _scores = store.state.scoreBoard?.getScores() ?? [];
+            return store.state;
+          },
         builder: (context, state) => SafeArea(
         child: Column(
           children: [
@@ -67,7 +69,7 @@ class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
                   final ScoreEntry entry = _scores[index];
                   return Row(
                     children: [
-                      _buildBodyCell(entry.scoreDate.toString(), 0),
+                      _buildBodyCell(entry.scoreDateString, 0),
                       _buildBodyCell(entry.scoreValue.toString(), 1),
                       _buildBodyCell(entry.turnCount.toString(), 2),
                     ],
@@ -75,10 +77,7 @@ class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
                 },
               ),
             ),
-            MenuButton(
-              onPressed: () => loadExistingGame(store),
-              buttonText: 'Continue Game',
-            ),
+            gameButton(store),
             MenuButton(
               onPressed: () => returnToMainMenu(store),
               buttonText: 'Main Menu',
@@ -132,7 +131,7 @@ class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
 
   Expanded _buildBodyCell(String label, int index) {
     return Expanded(
-      child: Text(label, textAlign: TextAlign.center),
+      child: Text(label, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 16)),
     );
   }
 
@@ -145,5 +144,19 @@ class _ScoreBoardScreenState extends State<ScoreBoardScreen> {
     AppState? loadedState = await LocalFileService.readAppState();
 
     store.dispatch(LoadExistingGameAction(loadedState: loadedState ?? store.state));
+  }
+
+  void startNewGame(Store<AppState> store) {
+    store.dispatch(SetActiveScreenAction(const NewGameScreen()));
+  }
+
+  MenuButton gameButton(Store<AppState> store) {
+    if(store.state.isGameOver) {
+      return MenuButton(buttonText: 'New Game', onPressed: () => startNewGame(store));
+    }
+    return MenuButton(
+      onPressed: () => loadExistingGame(store),
+      buttonText: 'Continue Game',
+    );
   }
 }

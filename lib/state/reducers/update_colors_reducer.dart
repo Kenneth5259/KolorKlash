@@ -5,6 +5,7 @@ import 'package:kolor_klash/popups/game_over_popup.dart';
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
 import 'package:kolor_klash/state/subclasses/emptied_deck.dart';
 import 'package:kolor_klash/state/subclasses/flushed_map.dart';
+import 'package:kolor_klash/state/subclasses/scoreboard.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 import 'package:kolor_klash/state/utilities/GameStateRules.dart';
 import 'package:kolor_klash/widgets/tile_container.dart';
@@ -65,8 +66,10 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   updatedAppState.activePopupMenu = updatedAppState.isGameOver ? GameOverMenu.POPUP_ID : null;
   updatedAppState.activeScreen = previousState.activeScreen;
   updatedAppState.volume = previousState.volume;
+  updatedAppState.scoreBoard = updatedAppState.scoreBoard;
   if(updatedAppState.isGameOver) {
     effectPlayer.play(AssetSource('music/effect/cartoon-slide-whistle-down-2-176648.mp3'));
+    updatedAppState.scoreBoard.addScore(ScoreEntry(scoreValue: score, turnCount: turnCount));
   } else if(flushables.isEmpty){
     effectPlayer.play(AssetSource('music/effect/pop-39222.mp3'));
   }

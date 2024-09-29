@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class ScoreBoard {
   List<ScoreEntry> _scores = [];
 
@@ -27,10 +29,12 @@ class ScoreBoard {
 
   static ScoreBoard fromJson(Map jsonMap) {
     ScoreBoard updatedScoreBoard = ScoreBoard();
-    List<String> scoreStrings = jsonMap['scores'];
-    for(String score in scoreStrings) {
-      Map scoreMap = jsonDecode(score);
-      updatedScoreBoard.addScore(ScoreEntry.fromJson(scoreMap));
+    List scoreStrings = jsonMap['scores'];
+    for(var score in scoreStrings) {
+      if(score is String) {
+        Map scoreMap = jsonDecode(score);
+        updatedScoreBoard.addScore(ScoreEntry.fromJson(scoreMap));
+      }
     }
     return updatedScoreBoard;
   }
@@ -57,5 +61,10 @@ class ScoreEntry {
         turnCount: jsonMap['turnCount'],
         scoreDate: DateTime.parse(jsonMap['scoreDate'])
     );
+  }
+
+  String get scoreDateString {
+    var format = DateFormat('M-d-y h:mma');
+    return format.format(scoreDate);
   }
 }

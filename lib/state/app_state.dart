@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:kolor_klash/state/subclasses/enums.dart';
+import 'package:kolor_klash/state/subclasses/scoreboard.dart';
 import 'package:kolor_klash/state/subclasses/tile_container_state.dart';
 
 import '../screens/main_menu_screen.dart';
@@ -19,6 +20,7 @@ class AppState {
   bool initialized = false;
   bool isGameOver = false;
   String? activePopupMenu;
+  ScoreBoard scoreBoard = ScoreBoard();
 
   late List<List<TileContainerReduxState>> grid;
 
@@ -41,7 +43,6 @@ class AppState {
     for(var i = 0; i < gridSize; i++) {
       List<TileContainerReduxState> row = [];
       for(var j = 0; j < gridSize; j++) {
-        //GlobalKey<TileContainerState> tileContainerKey = GlobalKey();
         row.add(TileContainerReduxState(container: TileContainer(size: gridSize, row: i, column: j)));
       }
       deck.add(GameTile(max: gridSize, index: i, color: GameTile.generateColor(), colorIndex: GameTile.generateColumnIndex(0, gridSize),));
@@ -63,6 +64,7 @@ class AppState {
       'isGameOver': false,
       'showRestartMenu': false,
       'showSettingsMenu': false,
+      'scoreBoard': scoreBoard.toJson(),
 
       // lists
       'deck': getDeckJson(),
@@ -102,6 +104,7 @@ class AppState {
     loadedState.initialized = true;
     loadedState.isGameOver = false;
     loadedState.activePopupMenu = null;
+    loadedState.scoreBoard = ScoreBoard.fromJson(jsonDecode(values['scoreBoard']));
 
     loadedState.deck = getDeckFromJson(values['deck']);
     loadedState.grid = getGridFromJson(values['grid']);

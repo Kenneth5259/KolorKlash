@@ -119,7 +119,7 @@ class _MainMenuScreenState extends State<MainMenuScreen> with TickerProviderStat
 
   void scoreBoardScreen() {
     final store = StoreProvider.of<AppState>(context);
-    store.dispatch(SetActiveScreenAction(const ScoreBoardScreen(scores: [])));
+    store.dispatch(SetActiveScreenAction(const ScoreBoardScreen()));
   }
 
   void markInitialized() {
