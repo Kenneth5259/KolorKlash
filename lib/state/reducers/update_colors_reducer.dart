@@ -66,7 +66,7 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   updatedAppState.activePopupMenu = updatedAppState.isGameOver ? GameOverMenu.POPUP_ID : null;
   updatedAppState.activeScreen = previousState.activeScreen;
   updatedAppState.volume = previousState.volume;
-  updatedAppState.scoreBoard = updatedAppState.scoreBoard;
+  updatedAppState.scoreBoard = previousState.scoreBoard;
   if(updatedAppState.isGameOver) {
     effectPlayer.play(AssetSource('music/effect/cartoon-slide-whistle-down-2-176648.mp3'));
     updatedAppState.scoreBoard.addScore(ScoreEntry(scoreValue: score, turnCount: turnCount));
