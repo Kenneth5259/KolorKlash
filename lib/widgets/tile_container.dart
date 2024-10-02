@@ -33,10 +33,10 @@ class _TileContainerState extends State<TileContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return storeConnectorWidget(context, (state) => DragTarget(
+    return storeConnectorWidget(context, (state) => DragTarget<GameTilePayload>(
         builder: (BuildContext context, List<dynamic> accepted, List<dynamic> rejected) => columnView(state),
-        onAccept: (GameTilePayload data) => updateColorMap(data, state),
-        onWillAccept: (GameTilePayload? data) => willAccept(data, state)
+        onAcceptWithDetails: (DragTargetDetails<GameTilePayload> details) => updateColorMap(details.data, state),
+        onWillAcceptWithDetails: (DragTargetDetails<GameTilePayload>? details) => willAccept(details?.data, state)
     ));
   }
 
@@ -55,12 +55,15 @@ class _TileContainerState extends State<TileContainer> {
   }
 
   bool willAccept(GameTilePayload? data, AppState state) {
-    if(data == null) {
+    if (data == null) {
       return false;
     }
-    var entries = data.colorMap.entries;
-    bool canAccept = colorMapFromState(state)[entries.first.key] == null;
-    return canAccept;
+    for (var entry in data.colorMap.entries) {
+      if (colorMapFromState(state)[entry.key] != null) {
+        return false;
+      }
+    }
+    return true;
   }
 
   Widget storeConnectorWidget(BuildContext context, Function(AppState state) builderMethod){

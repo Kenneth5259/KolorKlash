@@ -27,9 +27,9 @@ class AppState {
   Widget? activeScreen;
   late List<GameTile?> deck;
 
-  AppState({required this.gridSize}) {
+  AppState({required this.gridSize, required this.difficulty}) {
     activeScreen = activeScreen ?? const MainMenuScreen();
-    resetGameboard(gridSize);
+    resetGameboard(gridSize, difficulty);
   }
 
   resetStats() {
@@ -37,7 +37,7 @@ class AppState {
     score = 0;
   }
 
-  resetGameboard(int gridSize) {
+  resetGameboard(int gridSize, Difficulty difficulty) {
     grid = [];
     deck = [];
     for(var i = 0; i < gridSize; i++) {
@@ -45,7 +45,7 @@ class AppState {
       for(var j = 0; j < gridSize; j++) {
         row.add(TileContainerReduxState(container: TileContainer(size: gridSize, row: i, column: j)));
       }
-      deck.add(GameTile(max: gridSize, index: i, color: GameTile.generateColor(), colorIndex: GameTile.generateColumnIndex(0, gridSize),));
+      deck.add(GameTile(max: gridSize, index: i, color: GameTile.generateColor(), colorIndex: GameTile.generateColumnIndex(0, gridSize), difficulty: difficulty));
       grid.add(row);
     }
   }
@@ -94,7 +94,7 @@ class AppState {
 
   static AppState loadFromJson(String json) {
     Map values = jsonDecode(json);
-    AppState loadedState = AppState(gridSize: values["gridSize"]);
+    AppState loadedState = AppState(gridSize: values["gridSize"], difficulty: stringToDifficulty(values['difficulty']));
     loadedState.difficulty = stringToDifficulty(values['difficulty']);
     loadedState.turnCount = values["turnCount"];
     loadedState.score = values["score"];

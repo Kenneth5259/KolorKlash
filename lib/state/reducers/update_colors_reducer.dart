@@ -12,11 +12,11 @@ import 'package:kolor_klash/widgets/tile_container.dart';
 
 import '../../widgets/game_tile.dart';
 import '../app_state.dart';
+import '../subclasses/enums.dart';
 
 AudioPlayer effectPlayer = AudioPlayer();
 
 AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) {
-
   effectPlayer.setVolume(previousState.volume);
 
   // get the grid
@@ -34,7 +34,7 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   deck[action.gameTileIndex] = null;
 
   // handle an emptied deck
-  EmptiedDeck emptiedDeck = handleEmptyDeck(deck, grid.length, turnCount);
+  EmptiedDeck emptiedDeck = handleEmptyDeck(deck, grid.length, turnCount, previousState.difficulty);
 
   // update turn count off of return
   turnCount = emptiedDeck.turnCount;
@@ -42,8 +42,10 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   // get the tile in question
   TileContainer tile = action.tile;
 
-  // assign the updated color (protection provided by drag target willAccept)
-  grid[tile.row][tile.column].colorMap[newColor.keys.first] = newColor.values.first;
+  // assign the updated colors (protection provided by drag target willAccept)
+  newColor.forEach((key, value) {
+    grid[tile.row][tile.column].colorMap[key] = value;
+  });
 
   // unique set of tiles that can be flushed
   Set<TileContainerReduxState> flushables = GameStateRules.generateFlushableSet(grid, tile, newColor.values.first);
@@ -51,13 +53,13 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   // update deck off of return
   List<GameTile?> newDeck = emptiedDeck.deck;
 
-  for(var tile in flushables) {
+  for (var tile in flushables) {
     FlushedMap flushedMap = flushColor(tile.colorMap, newColor.values.first);
     score += flushedMap.colorCount;
     tile.colorMap = flushedMap.colorMap;
   }
 
-  AppState updatedAppState = AppState(gridSize: previousState.gridSize);
+  AppState updatedAppState = AppState(gridSize: previousState.gridSize, difficulty: previousState.difficulty);
   updatedAppState.grid = grid;
   updatedAppState.deck = newDeck;
   updatedAppState.score = score;
@@ -67,24 +69,24 @@ AppState updateColorsReducer(AppState previousState, UpdateColorsAction action) 
   updatedAppState.activeScreen = previousState.activeScreen;
   updatedAppState.volume = previousState.volume;
   updatedAppState.scoreBoard = previousState.scoreBoard;
-  if(updatedAppState.isGameOver) {
+  if (updatedAppState.isGameOver) {
     effectPlayer.play(AssetSource('music/effect/cartoon-slide-whistle-down-2-176648.mp3'));
     updatedAppState.scoreBoard.addScore(ScoreEntry(scoreValue: score, turnCount: turnCount));
-  } else if(flushables.isEmpty){
+  } else if (flushables.isEmpty) {
     effectPlayer.play(AssetSource('music/effect/pop-39222.mp3'));
   }
   return updatedAppState;
 }
 
 /// empties a deck and increments turn count if empty
-EmptiedDeck handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount) {
+EmptiedDeck handleEmptyDeck(List<GameTile?> deck, int gridSize, int turnCount, Difficulty difficulty) {
   // check if the deck is "empty" ie all are null
   for(var entry in deck) {
     if(entry != null) {
       return EmptiedDeck(deck: deck, turnCount: turnCount);
     }
   }
-  var newDeck = generateNewDeck(gridSize);
+  var newDeck = generateNewDeck(gridSize, difficulty);
   turnCount = turnCount + 1;
   return EmptiedDeck(deck: newDeck, turnCount: turnCount);
 }
@@ -99,11 +101,11 @@ FlushedMap flushColor(Map<int, Color> colorMap, Color color) {
 }
 
 /// method to generate a new deck
-List<GameTile?> generateNewDeck(int gridSize) {
+List<GameTile?> generateNewDeck(int gridSize, Difficulty difficulty) {
   List<GameTile?> deck = [];
   // populate the deck with excess
   for(var i  = 0; i < gridSize; i++) {
-    deck.add(GameTile(max: gridSize, index: i, colorIndex: GameTile.generateColumnIndex(0, gridSize), color: GameTile.generateColor()));
+    deck.add(GameTile(max: gridSize, index: i, colorIndex: GameTile.generateColumnIndex(0, gridSize), color: GameTile.generateColor(), difficulty: difficulty));
   }
   effectPlayer.play(AssetSource('music/effect/clean-fast-swooshaiff-14784.mp3'));
   return deck;

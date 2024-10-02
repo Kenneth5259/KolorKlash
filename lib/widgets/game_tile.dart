@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:kolor_klash/widgets/flex_column.dart';
 import 'dart:math';
 
+import '../state/subclasses/enums.dart';
+
 class GameTile extends StatefulWidget {
-  GameTile({
+  const GameTile({
     Key? key,
     required this.max,
     required this.index,
     required this.colorIndex,
-    this.color
+    this.color,
+    required this.difficulty,
   }) : super(key: key);
 
   final int min = 0;
@@ -16,11 +19,12 @@ class GameTile extends StatefulWidget {
   final int index;
   final int colorIndex;
   final Color? color;
+  final Difficulty difficulty;
 
   static const List<Color> COLORS = <Color>[Colors.red, Colors.green, Colors.blue, Colors.yellow, Colors.orange];
 
   @override
-  GameTileState createState() => GameTileState();  // made the GameTileState class public
+  GameTileState createState() => GameTileState();
 
   static Color generateColor() {
     final shuffledColors = List.from(GameTile.COLORS)..shuffle(Random());
@@ -38,24 +42,66 @@ class GameTile extends StatefulWidget {
       'max': max,
       'index': index,
       'colorIndex': colorIndex,
-      'color': color?.value
+      'color': color?.value,
+      'difficulty': difficulty.toString(),
     };
   }
+
   static GameTile loadFromJsonMap(Map item) {
     Color color = Color(item['color']);
-    GameTile tile = GameTile(max: item['max'], index: item['index'], colorIndex: item['colorIndex'], color: color);
+    Difficulty difficulty = stringToDifficulty(item['difficulty']);
+    GameTile tile = GameTile(
+      max: item['max'],
+      index: item['index'],
+      colorIndex: item['colorIndex'],
+      color: color,
+      difficulty: difficulty,
+    );
     return tile;
   }
 }
 
-class GameTileState extends State<GameTile> { // made the GameTileState class public
-  List<FlexColumn> generateColumns(Color currentColor) {
-    return List.generate(
-        widget.max, (i) => FlexColumn(color: i == widget.colorIndex ? currentColor : null, isAnimated: false,));
+class GameTileState extends State<GameTile> {
+  Map<int, Color> generateColorMap(Color currentColor) {
+    Map<int, Color> colorMap = {widget.colorIndex: currentColor};
+
+    if (widget.difficulty == Difficulty.medium) {
+      if (Random().nextDouble() < 0.3) {
+        int secondColorIndex;
+        do {
+          secondColorIndex = GameTile.generateColumnIndex(widget.min, widget.max);
+        } while (secondColorIndex == widget.colorIndex);
+        colorMap[secondColorIndex] = GameTile.generateColor();
+      }
+    } else if (widget.difficulty == Difficulty.hard && widget.max > 3) {
+      if (Random().nextDouble() < 0.5) {
+        int secondColorIndex;
+        do {
+          secondColorIndex = GameTile.generateColumnIndex(widget.min, widget.max);
+        } while (secondColorIndex == widget.colorIndex);
+        colorMap[secondColorIndex] = GameTile.generateColor();
+      }
+      if (Random().nextDouble() < 0.1) {
+        int thirdColorIndex;
+        do {
+          thirdColorIndex = GameTile.generateColumnIndex(widget.min, widget.max);
+        } while (thirdColorIndex == widget.colorIndex || colorMap.containsKey(thirdColorIndex));
+        colorMap[thirdColorIndex] = GameTile.generateColor();
+      }
+    }
+
+    return colorMap;
   }
 
-  Widget buildTileWidget(Color currentColor, int colorIndex) {
-    final columns = generateColumns(currentColor);
+  List<FlexColumn> generateColumns(Map<int, Color> colorMap) {
+    return List.generate(
+      widget.max,
+          (i) => FlexColumn(color: colorMap[i], isAnimated: false),
+    );
+  }
+
+  Widget buildTileWidget(Map<int, Color> colorMap) {
+    final columns = generateColumns(colorMap);
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Row(children: columns),
@@ -74,12 +120,13 @@ class GameTileState extends State<GameTile> { // made the GameTileState class pu
   @override
   Widget build(BuildContext context) {
     final currentColor = widget.color ?? GameTile.generateColor();
-    final tile = buildTileWidget(currentColor, widget.colorIndex);
+    final colorMap = generateColorMap(currentColor);
+    final tile = buildTileWidget(colorMap);
     return LayoutBuilder(
       builder: (context, constraints) {
         final width = constraints.maxWidth;
         final height = constraints.maxHeight;
-        final payload = GameTilePayload(colorMap: {widget.colorIndex: currentColor}, tileIndex: widget.index);
+        final payload = GameTilePayload(colorMap: colorMap, tileIndex: widget.index);
         return buildDraggableGameTile(payload, width, height, tile);
       },
     );

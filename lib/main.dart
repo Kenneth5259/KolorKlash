@@ -6,6 +6,7 @@ import 'package:kolor_klash/services/local_file_service.dart';
 
 import 'package:kolor_klash/state/app_reducer.dart';
 import 'package:kolor_klash/state/app_state.dart';
+import 'package:kolor_klash/state/subclasses/enums.dart';
 import 'package:kolor_klash/styles/background_gradient.dart';
 import 'package:kolor_klash/widgets/screen_container.dart';
 import 'package:redux/redux.dart';
@@ -14,7 +15,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  AppState initialState = await LocalFileService.readAppState() ?? AppState(gridSize: 3);
+  AppState initialState = await LocalFileService.readAppState() ?? AppState(gridSize: 3, difficulty: Difficulty.easy);
   initialState.initialized = false;
 
   final store = Store<AppState>(appReducer, initialState: initialState, syncStream: true);

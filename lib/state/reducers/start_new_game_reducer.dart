@@ -7,7 +7,7 @@ AppState startNewGameReducer(AppState previousState, StartNewGameAction action) 
   previousState.gridSize = action.gridSize;
   previousState.activeScreen = const GameBoard();
   previousState.activePopupMenu = null;
-  previousState.resetGameboard(action.gridSize);
+  previousState.resetGameboard(action.gridSize, action.difficulty);
   previousState.resetStats();
 
   return previousState;
