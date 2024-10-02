@@ -3,13 +3,11 @@ import 'package:kolor_klash/state/actions/load_existing_game_action.dart';
 import 'package:kolor_klash/state/actions/mark_initialized_action.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
 import 'package:kolor_klash/state/actions/set_game_tile_size_action.dart';
-import 'package:kolor_klash/state/actions/set_gridsize_action.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
 import 'package:kolor_klash/state/actions/update_colors_action.dart';
 import 'package:kolor_klash/state/actions/update_active_popup_action.dart';
 import 'package:kolor_klash/state/actions/update_volume_action.dart';
 import 'package:kolor_klash/state/reducers/active_screen_reducer.dart';
-import 'package:kolor_klash/state/reducers/grid_size_reducer.dart';
 import 'package:kolor_klash/state/reducers/load_existing_game_reducer.dart';
 import 'package:kolor_klash/state/reducers/mark_initialized_reducer.dart';
 import 'package:kolor_klash/state/reducers/set_game_tile_size_reducer.dart';
@@ -29,9 +27,6 @@ AppState appReducer(AppState previousState, dynamic action) {
 AppState stateFromReducer(AppState previousState, dynamic action) {
   if(action is MarkInitializedAction) {
     return markInitializedReducer(previousState);
-  }
-  if(action is SetGridSizeAction) {
-    return gridSizeReducer(previousState, action);
   }
   if(action is UpdateColorsAction) {
     return updateColorsReducer(previousState, action);
