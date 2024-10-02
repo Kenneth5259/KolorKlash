@@ -37,15 +37,15 @@ class AppState {
     score = 0;
   }
 
-  resetGameboard(int gridSize, Difficulty difficulty) {
+  void resetGameboard(int gridSize, Difficulty difficulty) {
     grid = [];
     deck = [];
-    for(var i = 0; i < gridSize; i++) {
+    for (var i = 0; i < gridSize; i++) {
       List<TileContainerReduxState> row = [];
-      for(var j = 0; j < gridSize; j++) {
+      for (var j = 0; j < gridSize; j++) {
         row.add(TileContainerReduxState(container: TileContainer(size: gridSize, row: i, column: j)));
       }
-      deck.add(GameTile(max: gridSize, index: i, color: GameTile.generateColor(), colorIndex: GameTile.generateColumnIndex(0, gridSize), difficulty: difficulty));
+      deck.add(GameTile.generateNewTile(gridSize, difficulty, i));
       grid.add(row);
     }
   }

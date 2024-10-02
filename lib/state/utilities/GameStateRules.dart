@@ -127,24 +127,30 @@ class GameStateRules {
   }
 
   static bool isGameOver(List<List<TileContainerReduxState>> grid, List<GameTile?> deck) {
-    bool isGameOver = true;
-
-    for(var row in grid) {
-      for(var tileContainer in row) {
-        for(var gameTile in deck) {
-          if(gameTile != null && tileContainer.colorMap[gameTile.colorIndex] == null) {
-            return false;
+    for (var row in grid) {
+      for (var tileContainer in row) {
+        for (var gameTile in deck) {
+          if (gameTile != null) {
+            bool canAccommodate = true;
+            for (var entry in gameTile.colorIndexes) {
+              if (tileContainer.colorMap[entry] != null) {
+                canAccommodate = false;
+                break;
+              }
+            }
+            if (canAccommodate) {
+              return false;
+            }
           }
         }
       }
     }
-
-    return isGameOver;
+    return true;
   }
 
   static bool hasColorMatch(Map<int, Color> map, Color color) {
-    for(var entry in map.entries) {
-      if(entry.value.value == color.value) {
+    for (var entry in map.entries) {
+      if (entry.value.value == color.value) {
         return true;
       }
     }
