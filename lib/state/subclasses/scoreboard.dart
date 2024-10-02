@@ -14,7 +14,13 @@ class ScoreBoard {
   }
 
   void addScore(ScoreEntry score) {
-    _scores.add(score);
+    // Check if the score already exists in the list
+    bool alreadyExists = _scores.any((existingScore) => existingScore == score);
+
+    if (!alreadyExists) {
+      // Only add the score if it does not already exist in the list
+      _scores.add(score);
+    }
   }
 
   String toJson() {
