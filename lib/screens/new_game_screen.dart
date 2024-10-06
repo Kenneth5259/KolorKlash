@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:kolor_klash/Extensions/string_extensions.dart';
+import 'package:kolor_klash/extensions/string_extensions.dart';
 import 'package:kolor_klash/screens/main_menu_screen.dart';
 import 'package:kolor_klash/state/actions/set_active_screen_action.dart';
 import 'package:kolor_klash/state/actions/start_new_game_action.dart';
